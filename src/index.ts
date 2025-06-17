@@ -1,9 +1,12 @@
 import Fastify from 'fastify'
 import config from './config'
+import {authRoutes} from "./modules/auth/auth.controller";
 
 const app = Fastify()
 
 app.get('/ping', async () => ({ pong: true }))
+
+app.register(authRoutes)
 
 app.listen({ port: config.port }, err => {
     if (err) {

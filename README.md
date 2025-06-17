@@ -123,6 +123,7 @@ Client → Nginx (Reverse Proxy) → Multiple Fastify Instances
     /infra
     /redis
     /config
+    /utils
 
 /frontend
   /src
@@ -168,9 +169,10 @@ pnpm dev
 ### Stage 1: Fastify + Auth ⭐️
 - [x] Init Fastify project with TypeScript
 - [x] Setup env config (dotenv)
-- [ ] Add authentication (username/password)
-- [ ] Implement login + user creation
-- [ ] Assign roles: admin, user, nikita
+- [x] Add authentication (username/password)
+- [x] Implement login + user creation
+- [x] Assign roles: admin, user, nikita
+- [ ] (?) Add JWT expiration + refresh token
 
 ### Stage 2: Prisma + PostgreSQL ⭐️
 - [ ] Init Prisma + connect PostgreSQL
