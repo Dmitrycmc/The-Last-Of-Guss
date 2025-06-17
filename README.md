@@ -6,18 +6,23 @@ Multiplayer browser game where players compete in tapping a mutated goose. Each 
 
 ## 🧱 Tech Stack
 
-| Layer         | Technology                |
-|---------------|---------------------------|
-| Backend       | Fastify (TypeScript)      |
-| ORM           | Prisma (PostgreSQL)       |
-| Redis         | node-redis                |
-| Frontend      | React + Vite + TypeScript |
-| UI Kit        | shadcn/ui                 |
-| State Manager | Zustand                   |
-| WS            | WebSocket + Redis Pub/Sub |
-| CI/CD         | GitHub Actions (*)        |
-| Testing       | Vitest, Supertest (*)     |
-| Deployment    | Docker + Compose (*)      |
+| Layer           | Technology                |
+|-----------------|---------------------------|
+| Package Manager | PNPM                      |
+|                 |                           |
+| Backend         | Fastify (TypeScript)      |
+| Database        | PostgreSQL                |
+| ORM             | Prisma                    |
+| Redis           | node-redis                |
+|                 |                           |
+| Frontend        | React + Vite + TypeScript |
+| UI Kit          | shadcn/ui                 |
+| State Manager   | Zustand                   |
+|                 |                           |
+| WS              | WebSocket + Redis Pub/Sub |
+| CI/CD           | GitHub Actions (*)        |
+| Testing         | Vitest, Supertest (*)     |
+| Deployment      | Docker + Compose (*)      |
 
 ---
 
