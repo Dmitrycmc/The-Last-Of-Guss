@@ -1,10 +1,11 @@
 import Fastify from 'fastify'
+import config from './config'
 
 const app = Fastify()
 
 app.get('/ping', async () => ({ pong: true }))
 
-app.listen({ port: 3000 }, err => {
+app.listen({ port: config.port }, err => {
     if (err) {
         console.error(err)
         process.exit(1)

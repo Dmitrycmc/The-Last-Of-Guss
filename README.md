@@ -152,7 +152,7 @@ pnpm dev
 
 ```bash
 # Backend
-cp .env.example .env
+cp .example.env .env
 docker-compose up -d
 pnpm dev
 
@@ -167,7 +167,7 @@ pnpm dev
 
 ### Stage 1: Fastify + Auth ⭐️
 - [x] Init Fastify project with TypeScript
-- [ ] Setup env config (dotenv)
+- [x] Setup env config (dotenv)
 - [ ] Add authentication (username/password)
 - [ ] Implement login + user creation
 - [ ] Assign roles: admin, user, nikita
