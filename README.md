@@ -166,7 +166,7 @@ pnpm dev
 ## 🛠 Work Plan
 
 ### Stage 1: Fastify + Auth ⭐️
-- [ ] Init Fastify project with TypeScript
+- [x] Init Fastify project with TypeScript
 - [ ] Setup env config (dotenv)
 - [ ] Add authentication (username/password)
 - [ ] Implement login + user creation
