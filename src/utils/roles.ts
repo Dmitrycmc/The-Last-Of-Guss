@@ -1,11 +1,11 @@
-import {ADMIN_ROLE, NIKITA_ROLE, Role, USER_ROLE} from "../modules/auth/types";
+import {Role} from "../generated/prisma";
 
 export const resolveRole = (username: string): Role => {
     if (username === 'admin') {
-        return ADMIN_ROLE
+        return Role.ADMIN_ROLE
     }
     if (username === 'Никита') {
-        return NIKITA_ROLE
+        return Role.NIKITA_ROLE
     }
-    return USER_ROLE
+    return Role.USER_ROLE
 }

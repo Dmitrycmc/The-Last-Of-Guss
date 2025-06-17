@@ -50,7 +50,7 @@ Client → Nginx (Reverse Proxy) → Multiple Fastify Instances
 
 - `User`: name, password, role (`admin`, `nikita`, `survivor`)
 - `Round`: uuid, startAt, endAt, status (`cooldown`, `active`, `finished`)
-- `Tap` (Redis only): score + tap count per player per round
+- `UserRoundScore` (Redis + DB Sync): score count per player per round
 
 ---
 
@@ -114,6 +114,7 @@ Client → Nginx (Reverse Proxy) → Multiple Fastify Instances
 
 ```
 /backend
+  /prisma
   /src
     /modules
       /auth
@@ -122,7 +123,7 @@ Client → Nginx (Reverse Proxy) → Multiple Fastify Instances
     /ws
     /infra
     /redis
-    /config
+    /config.ts
     /utils
 
 /frontend
@@ -175,10 +176,10 @@ pnpm dev
 - [ ] (?) Add JWT expiration + refresh token
 
 ### Stage 2: Prisma + PostgreSQL ⭐️
-- [ ] Init Prisma + connect PostgreSQL
-- [ ] Design schema: User, Round, Tap
-- [ ] Add relations + constraints
-- [ ] Create seeding & migration scripts
+- [x] Init Prisma + connect PostgreSQL
+- [x] Design schema: User, Round, UserRoundScore
+- [x] Add relations + constraints
+- [x] Create seeding & migration scripts
 
 ### Stage 3: Game Logic & API ⭐️
 - [ ] Create round (admin only)
