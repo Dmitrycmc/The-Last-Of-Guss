@@ -26,7 +26,6 @@ model Round {
   id        String             @id @default(uuid())
   startAt   DateTime
   endAt     DateTime
-  status    RoundStatus
   scores    UserRoundScore[]
   createdAt DateTime           @default(now())
 }

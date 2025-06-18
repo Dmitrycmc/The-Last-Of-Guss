@@ -5,6 +5,16 @@ import {NotFoundError} from "errors/app-error";
 import {RoundInfo, Winner} from "modules/round/types";
 
 class RoundService {
+    async createRound(startAt: string, duration = 30) {
+        const start = startAt ? new Date(startAt) : new Date()
+        const end = new Date(start.getTime() + duration * 1000)
+
+        return await database.createRound({
+                startAt: start,
+                endAt: end,
+        })
+    }
+
     async getAllRounds() {
         const rounds = await database.findAllRounds()
 

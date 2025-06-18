@@ -176,7 +176,7 @@ pnpm dev
 - [x] Create seeding & migration scripts
 
 ### Stage 3: Game Logic & API ⭐️
-- [ ] Create round (admin only)
+- [x] Create round (admin only)
 - [x] Get all rounds (active, scheduled)
 - [x] Get round info (status, self score, winner)
 - [ ] Tap handler (role, cooldown, score logic)

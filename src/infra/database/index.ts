@@ -19,6 +19,10 @@ class PrismaDataBase implements IDataBase {
         })
     }
 
+    createRound(data: Prisma.RoundCreateInput): Promise<Round> {
+        return this._prisma.round.create({data})
+    }
+
     findUser(username: string): Promise<User | null> {
         return this._prisma.user.findUnique({ where: { username } })
     }

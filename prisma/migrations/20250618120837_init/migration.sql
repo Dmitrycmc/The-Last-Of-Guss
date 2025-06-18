@@ -19,7 +19,6 @@ CREATE TABLE "Round" (
     "id" TEXT NOT NULL,
     "startAt" TIMESTAMP(3) NOT NULL,
     "endAt" TIMESTAMP(3) NOT NULL,
-    "status" "RoundStatus" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Round_pkey" PRIMARY KEY ("id")

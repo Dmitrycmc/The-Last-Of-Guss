@@ -1,3 +1,13 @@
+### Create round
+POST http://localhost:3000/rounds
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+  "startAt": "2025-06-18T12:00:00.000Z",
+  "duration": 30
+}
+
 ### Get rounds
 GET http://localhost:3000/rounds
 Authorization: Bearer {{jwt}}
@@ -5,5 +15,4 @@ Authorization: Bearer {{jwt}}
 ### Get round info
 GET http://localhost:3000/round/sdf
 Authorization: Bearer {{jwt}}
-
 

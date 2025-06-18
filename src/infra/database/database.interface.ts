@@ -5,6 +5,8 @@ export interface IDataBase {
 
     findUser(username: string): Promise<User | null>;
 
+    createRound(round: Prisma.RoundCreateInput): Promise<Round>;
+
     findAllRounds(): Promise<Round[]>;
 
     findRound(id: string): Promise<Round | null>;
