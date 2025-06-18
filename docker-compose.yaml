@@ -28,9 +28,8 @@ services:
     depends_on:
       - postgres
       - redis
-    environment:
-      DATABASE_URL: postgres://user:pass@localhost:5432/guss
-      REDIS_URL: redis://redis:6379
+    env_file:
+      - .env
 
   backend2:
     image: guss-backend
@@ -39,9 +38,8 @@ services:
     depends_on:
       - postgres
       - redis
-    environment:
-      DATABASE_URL: postgres://user:pass@localhost:5432/guss
-      REDIS_URL: redis://redis:6379
+    env_file:
+      - .env
 
   backend3:
     image: guss-backend
@@ -50,9 +48,8 @@ services:
     depends_on:
       - postgres
       - redis
-    environment:
-      DATABASE_URL: postgres://user:pass@localhost:5432/guss
-      REDIS_URL: redis://redis:6379
+    env_file:
+      - .env
 
 volumes:
   postgres_data:

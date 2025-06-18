@@ -7,15 +7,14 @@ const redis = createClient({
 })
 
 redis.on('error', (err) => console.error('❌ Redis error:', err))
-
 redis.connect() // todo: move to main
 
 class RedisCache implements ICache {
-    constructor(private _redis) {}
+    constructor(private _redis: ReturnType<typeof createClient>) {}
 
     async incrementScore(roundId: string, userId: string): Promise<number> {
         const key = `score:${roundId}:${userId}`
-        return await redis.incr(key)
+        return await this._redis.incr(key)
     }
 }
 

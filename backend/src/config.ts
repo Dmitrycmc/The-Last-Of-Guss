@@ -6,7 +6,6 @@ const config = {
     port: Number(process.env.PORT) || 3000,
     jwtSecret: process.env.JWT_SECRET!,
     roundDuration: Number(process.env.ROUND_DURATION) || 60,
-    cooldownDuration: Number(process.env.COOLDOWN_DURATION) || 30,
     redisUrl: process.env.REDIS_URL || 'redis://localhost:6379'
 }
 

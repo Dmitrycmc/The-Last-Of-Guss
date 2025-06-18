@@ -5,6 +5,7 @@ import {BadRequestError, NotFoundError} from "../../errors/app-error";
 import {RoundInfo, Winner} from "./types";
 import {UserTokenData} from "../../types/user-token-data";
 import cache from "../../infra/cache";
+import pubSub from "../../infra/pubsub";
 
 class RoundService {
     async createRound(startAt: string, duration = 30) {
@@ -69,6 +70,7 @@ class RoundService {
         if (!isActive) throw new BadRequestError('Round is not active')
 
         const score = await cache.incrementScore(roundId, user.id)
+        pubSub.publish(roundId, user.id, score)
 
         return { score }
     }
