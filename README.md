@@ -179,7 +179,7 @@ pnpm dev
 - [x] Create round (admin only)
 - [x] Get all rounds (active, scheduled)
 - [x] Get round info (status, self score, winner)
-- [ ] Tap handler (role, cooldown, score logic)
+- [x] Tap handler (role, cooldown, score logic)
 
 ### Stage 4: Redis + Pub/Sub ⭐️
 - [ ] Init node-redis client

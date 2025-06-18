@@ -1,22 +1,28 @@
 import {FastifyInstance, FastifyReply, FastifyRequest} from 'fastify'
 import roundService from './round.service'
-import {requireUserMiddleware} from "../../middlewares/require-user.middleware";
-import {requireAdminRoleMiddleware} from "../../middlewares/require-admin-role.middleware";
+import {requireUser} from "../../middlewares/require-user.middleware";
+import {requireAdminRole} from "../../middlewares/require-admin-role.middleware";
 
 export async function roundRoutes(app: FastifyInstance) {
-    app.post('/rounds', { preHandler: [requireUserMiddleware, requireAdminRoleMiddleware] }, async (req, res) => {
+    app.post('/rounds', { preHandler: [requireUser, requireAdminRole] }, async (req, res) => {
         const { startAt, duration } = req.body as { startAt: string, duration: number }
 
-        const result = await roundService.createRound(startAt, duration)
-        return res.send(result)
+        return await roundService.createRound(startAt, duration)
     })
 
-    app.get('/rounds', { preHandler: requireUserMiddleware }, async (req, res) => await roundService.getAllRounds())
+    app.get('/rounds', { preHandler: requireUser }, async (req, res) => await roundService.getAllRounds())
 
-    app.get('/rounds/:id', { preHandler: requireUserMiddleware }, async (req: FastifyRequest, res: FastifyReply) => {
+    app.get('/rounds/:id', { preHandler: requireUser }, async (req: FastifyRequest, res: FastifyReply) => {
         const { id } = req.params as { id: string }
         const user = req.user!
 
         return await roundService.getRoundInfo(id, user.id)
+    })
+
+    app.post('/rounds/:id/tap', { preHandler: [requireUser] }, async (req: FastifyRequest, res: FastifyReply) => {
+        const user = req.user!
+        const {id} = req.params as { id: string }
+
+        return await roundService.handleTap(id, user)
     })
 }

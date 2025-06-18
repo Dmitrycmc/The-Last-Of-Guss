@@ -1,8 +1,9 @@
 import {database} from "../../infra/database";
 import {getRoundStatus} from "../../utils/round";
 import {RoundStatus} from "../../generated/prisma";
-import {NotFoundError} from "../../errors/app-error";
+import {BadRequestError, NotFoundError} from "../../errors/app-error";
 import {RoundInfo, Winner} from "./types";
+import {UserTokenData} from "../../types/user-token-data";
 
 class RoundService {
     async createRound(startAt: string, duration = 30) {
@@ -18,10 +19,9 @@ class RoundService {
     async getAllRounds() {
         const rounds = await database.findAllRounds()
 
-        const now = new Date()
         return rounds.map(round => ({
             ...round,
-            status: getRoundStatus(round.startAt, round.endAt, now)
+            status: getRoundStatus(round.startAt, round.endAt)
         }))
     }
 
@@ -32,8 +32,7 @@ class RoundService {
             throw new NotFoundError('Round not found')
         }
 
-        const now = new Date()
-        const status = getRoundStatus(round.startAt, round.endAt, now)
+        const status = getRoundStatus(round.startAt, round.endAt)
 
         let score = 0
         if (userId) {
@@ -59,6 +58,19 @@ class RoundService {
             score,
             winner
         }
+    }
+
+    async handleTap(roundId: string, user: UserTokenData): Promise<{ score: number }> {
+        const round = await database.findRound(roundId)
+        if (!round) throw new NotFoundError("Round not found")
+
+        const isActive = getRoundStatus(round.startAt, round.endAt) === RoundStatus.ACTIVE_STATUS
+        if (!isActive) throw new BadRequestError('Round is not active')
+
+        const key = `score:${roundId}:${user.id}`
+        const score = 4; //await redis.incr(key)
+
+        return { score }
     }
 }
 
