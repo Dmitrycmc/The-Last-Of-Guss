@@ -1,0 +1,8 @@
+### Get rounds
+GET http://localhost:3000/rounds
+
+### Get round info
+GET http://localhost:3000/round/sdf
+
+###
+

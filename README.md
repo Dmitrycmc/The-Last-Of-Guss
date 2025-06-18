@@ -8,7 +8,7 @@ Multiplayer browser game where players compete in tapping a mutated goose. Each 
 
 | Layer           | Technology                |
 |-----------------|---------------------------|
-| Package Manager | PNPM                      |
+| Package Manager | Yarn                      |
 |                 |                           |
 | Backend         | Fastify (TypeScript)      |
 | Database        | PostgreSQL                |
@@ -121,6 +121,7 @@ Client → Nginx (Reverse Proxy) → Multiple Fastify Instances
 /backend
   /prisma
   /src
+    /errors
     /modules
       /auth
       /round
@@ -136,21 +137,6 @@ Client → Nginx (Reverse Proxy) → Multiple Fastify Instances
     /pages
     /components
     /store
-```
-
----
-
-## 🧰 Commands
-
-```bash
-# backend
-pnpm dev
-pnpm build
-pnpm test
-
-# frontend
-pnpm install
-pnpm dev
 ```
 
 ---
@@ -188,8 +174,8 @@ pnpm dev
 
 ### Stage 3: Game Logic & API ⭐️
 - [ ] Create round (admin only)
-- [ ] Get all rounds (active, scheduled)
-- [ ] Get round info (status, self score, winner)
+- [x] Get all rounds (active, scheduled)
+- [x] Get round info (status, self score, winner)
 - [ ] Tap handler (role, cooldown, score logic)
 
 ### Stage 4: Redis + Pub/Sub ⭐️
