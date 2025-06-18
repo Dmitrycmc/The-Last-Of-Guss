@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import {generateToken} from "../../utils/jwt";
 import {resolveRole} from "../../utils/roles";
-import {database} from "../../infra/database";
+import database from "../../infra/database";
 import {BadRequestError, NotFoundError} from "../../errors/app-error";
 
 class AuthService {

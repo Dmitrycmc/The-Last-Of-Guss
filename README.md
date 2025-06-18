@@ -182,8 +182,8 @@ pnpm dev
 - [x] Tap handler (role, cooldown, score logic)
 
 ### Stage 4: Redis + Pub/Sub ⭐️
-- [ ] Init node-redis client
-- [ ] Use Redis for tap counters `${roundId}:${userId}`
+- [x] Init node-redis client
+- [x] Use Redis for tap counters `score:${roundId}:${userId}`
 - [ ] Broadcast score updates via Pub/Sub
 - [ ] Sync between all Fastify instances
 - [ ] Periodic check (setInterval) to finalize round if time exceeded

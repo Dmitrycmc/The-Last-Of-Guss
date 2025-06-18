@@ -54,4 +54,5 @@ class PrismaDataBase implements IDataBase {
     }
 }
 
-export const database: IDataBase = new PrismaDataBase(prisma)
+const database: IDataBase = new PrismaDataBase(prisma)
+export default database

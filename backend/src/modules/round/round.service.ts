@@ -1,9 +1,10 @@
-import {database} from "../../infra/database";
+import database from "../../infra/database";
 import {getRoundStatus} from "../../utils/round";
 import {RoundStatus} from "../../generated/prisma";
 import {BadRequestError, NotFoundError} from "../../errors/app-error";
 import {RoundInfo, Winner} from "./types";
 import {UserTokenData} from "../../types/user-token-data";
+import cache from "../../infra/cache";
 
 class RoundService {
     async createRound(startAt: string, duration = 30) {
@@ -67,8 +68,7 @@ class RoundService {
         const isActive = getRoundStatus(round.startAt, round.endAt) === RoundStatus.ACTIVE_STATUS
         if (!isActive) throw new BadRequestError('Round is not active')
 
-        const key = `score:${roundId}:${user.id}`
-        const score = 4; //await redis.incr(key)
+        const score = await cache.incrementScore(roundId, user.id)
 
         return { score }
     }
