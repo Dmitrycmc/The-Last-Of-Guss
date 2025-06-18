@@ -1,8 +1,9 @@
 ### Get rounds
 GET http://localhost:3000/rounds
+Authorization: Bearer {{jwt}}
 
 ### Get round info
 GET http://localhost:3000/round/sdf
+Authorization: Bearer {{jwt}}
 
-###
 

@@ -2,13 +2,15 @@ import Fastify from 'fastify'
 import config from './config'
 import {authRoutes} from "modules/auth/auth.controller";
 import {roundRoutes} from "modules/round/round.controller";
-import {errorHandlerPlugin} from "errors/error-handler.plugin";
+import {authPlugin} from "plugins/auth.plugin";
+import {errorHandlerPlugin} from "plugins/error-handler.plugin";
 
 async function main() {
     const app = Fastify({
         logger: true
     })
 
+    authPlugin(app)
     app.register(errorHandlerPlugin)
     app.register(authRoutes)
     app.register(roundRoutes)

@@ -131,6 +131,8 @@ Client → Nginx (Reverse Proxy) → Multiple Fastify Instances
     /redis
     /config.ts
     /utils
+    /middlewares
+    /plugins
 
 /frontend
   /src
@@ -164,6 +166,7 @@ pnpm dev
 - [x] Add authentication (username/password)
 - [x] Implement login + user creation
 - [x] Assign roles: admin, user, nikita
+- [x] Added JWT middleware
 - [ ] (?) Add JWT expiration + refresh token
 
 ### Stage 2: Prisma + PostgreSQL ⭐️
