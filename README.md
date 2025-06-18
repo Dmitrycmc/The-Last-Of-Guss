@@ -214,8 +214,8 @@ pnpm dev
 - [ ] Manual testing for WebSocket & sync
 
 ### Stage 9: Deployment-Ready Setup ⭐️
-- [ ] Add Dockerfile
-- [ ] Add Redis + PostgreSQL in docker-compose
+- [x] Add Dockerfile
+- [x] Add Redis + PostgreSQL in docker-compose
 - [ ] Add entrypoint script for migrations + start
 - [ ] (Optional) Add healthcheck endpoints (/healthz, /readyz)
 

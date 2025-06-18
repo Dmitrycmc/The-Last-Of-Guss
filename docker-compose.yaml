@@ -13,5 +13,47 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  backend1:
+    image: guss-backend
+    ports:
+      - "3001:3000"
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      DATABASE_URL: postgres://user:pass@localhost:5432/guss
+      REDIS_URL: redis://redis:6379
+
+  backend2:
+    image: guss-backend
+    ports:
+      - "3002:3000"
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      DATABASE_URL: postgres://user:pass@localhost:5432/guss
+      REDIS_URL: redis://redis:6379
+
+  backend3:
+    image: guss-backend
+    ports:
+      - "3003:3000"
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      DATABASE_URL: postgres://user:pass@localhost:5432/guss
+      REDIS_URL: redis://redis:6379
+
 volumes:
   postgres_data:
+  redis_data:
