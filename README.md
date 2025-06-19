@@ -19,7 +19,7 @@ Multiplayer browser game where players compete in tapping a mutated goose. Each 
 | UI Kit          | shadcn/ui                 |
 | State Manager   | Zustand                   |
 |                 |                           |
-| WS              | WebSocket + Redis Pub/Sub |
+| WS              | ws + Redis Pub/Sub        |
 | CI/CD           | GitHub Actions (*)        |
 | Testing         | Vitest, Supertest (*)     |
 | Deployment      | Docker + Compose (*)      |
@@ -189,7 +189,7 @@ pnpm dev
 - [ ] Periodic check (setInterval) to finalize round if time exceeded
 
 ### Stage 5: WebSocket Gateway ⭐️
-- [ ] WebSocket setup in Fastify
+- [x] WebSocket setup in Fastify
 - [ ] Handle connect/disconnect
 - [ ] Broadcast round status + ticks
 - [ ] Broadcast user scores
