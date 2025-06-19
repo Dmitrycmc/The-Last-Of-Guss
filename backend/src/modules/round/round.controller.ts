@@ -3,12 +3,15 @@ import roundService from './round.service'
 import {requireUser} from "../../middlewares/require-user.middleware";
 import {requireAdminRole} from "../../middlewares/require-admin-role.middleware";
 import {WebSocketServer} from "ws";
-import pubSub from "../../infra/pubsub";
 import {parseToken} from "../../utils/jwt";
 import {UserTokenData} from "../../types/user-token-data";
 import {RoundStatus} from "../../generated/prisma";
 import cache from "../../infra/cache";
 import {getRoundStatus} from "../../utils/round";
+import pubSub from "../../infra/pub-sub";
+import {randomUUID} from "crypto";
+import database from "../../infra/database";
+import config from "../../config";
 
 export async function roundController(app: FastifyInstance) {
     const wss = new WebSocketServer({ server: app.server })
@@ -34,44 +37,36 @@ export async function roundController(app: FastifyInstance) {
 
         const match = request.url?.match(/\/rounds\/([\w-]+)/)
         if (!match) {
-            ws.close(1008, 'Invalid URL') // 1008 = Policy Violation
+            ws.close(1008, 'Invalid URL')
             return
         }
 
         const roundId = match[1]
-        const round = await roundService.getRoundInfo(roundId)
+        const round = await database.findRound(roundId)
         if (!round) {
             ws.close(1008, 'Round not found')
             return
         }
-        if (round.status === RoundStatus.FINISHED_STATUS) {
+        if (getRoundStatus(round.startAt, round.endAt) === RoundStatus.FINISHED_STATUS) {
             ws.close(1008, 'Round is finished')
             return
         }
 
-        if (round.status === RoundStatus.COOLDOWN_STATUS) {
-            const timeToStart = (round.startAt - new Date()) / 1000
-            const isLeader = await cache.acquireLock(roundId, Math.floor(timeToStart) + 2)
-            if (isLeader) {
-                console.log('Leader')
+        const wsId = randomUUID()
+        pubSub.publish(roundId, {type: 'kick', userId: user.id, wsId})
+
+        const takeLeadership = () => {
+            console.log('Took leadership')
+            if (getRoundStatus(round.startAt, round.endAt) === RoundStatus.COOLDOWN_STATUS) {
+                const timeToStart = (round.startAt.getTime() - Date.now()) / 1000
                 let remaining = Math.floor(timeToStart)
-                // todo: extract timer helpers
                 setTimeout(() => {
-                    let intervalId = setInterval(() => {
+                    const intervalId = setInterval(() => {
+                        cache.prolongateLock(roundId)
                         if (remaining <= 0) {
                             clearInterval(intervalId)
                             pubSub.publish(roundId, {type: 'start'})
-
-                            remaining = (round.endAt - round.startAt) / 1000
-                            intervalId = setInterval(() => {
-                                if (remaining <= 0) {
-                                    clearInterval(intervalId)
-                                    pubSub.publish(roundId, {type: 'end'})
-                                } else {
-                                    pubSub.publish(roundId, {type: 'game-tick', remaining})
-                                    remaining--
-                                }
-                            }, 1000)
+                            takeLeadership()
                         } else {
                             pubSub.publish(roundId, {type: 'cooldown-tick', remaining})
                             remaining--
@@ -79,14 +74,49 @@ export async function roundController(app: FastifyInstance) {
                     }, 1000)
                 }, timeToStart - remaining)
             }
+
+            if (getRoundStatus(round.startAt, round.endAt) === RoundStatus.ACTIVE_STATUS) {
+                const timeToEnd = (round.endAt.getTime() - Date.now()) / 1000
+                let remaining = Math.floor(timeToEnd)
+                setTimeout(() => {
+                    const intervalId = setInterval(() => {
+                        if (remaining <= 0) {
+                            clearInterval(intervalId)
+                            pubSub.publish(roundId, {type: 'end'})
+                        } else {
+                            cache.prolongateLock(roundId)
+                            pubSub.publish(roundId, {type: 'game-tick', remaining})
+                            remaining--
+                        }
+                    }, 1000)
+                }, timeToEnd - remaining)
+            }
         }
 
-        const handler = (message: unknown) => {
+        let intervalId: NodeJS.Timeout
+        if (await cache.acquireLock(roundId)) {
+            takeLeadership()
+        } else {
+            intervalId = setInterval(async () => {
+                if (await cache.acquireLock(roundId)) {
+                    clearInterval(intervalId)
+                    takeLeadership()
+                }
+            }, 1000)
+        }
+
+        const handler = (message: any) => {
             if (ws.readyState === ws.OPEN) {
+                if (message.type === 'kick' && message.userId === user.id && message.wsId !== wsId) {
+                    ws.close(4001, 'Another session started')
+                    clearInterval(intervalId)
+                    return
+                }
                 try {
                     ws.send(JSON.stringify(message))
                 } catch (e) {
                     console.error('❌ WebSocket error:', e)
+                    clearInterval(intervalId)
                     ws.terminate()
                 }
             }
@@ -94,6 +124,7 @@ export async function roundController(app: FastifyInstance) {
         pubSub.subscribe(roundId, handler)
         ws.on('close', () => {
             pubSub.unsubscribe(roundId, handler)
+            clearInterval(intervalId)
         })
         ws.on('message', (str) => {
             try {

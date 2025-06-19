@@ -185,8 +185,9 @@ pnpm dev
 - [x] Init node-redis client
 - [x] Use Redis for tap counters `score:${roundId}:${userId}`
 - [x] Broadcast score updates via Pub/Sub
-- [ ] Sync between all Fastify instances
-- [ ] Periodic check (setInterval) to finalize round if time exceeded
+- [x] Sync between all Fastify instances
+- [x] Periodic check (setInterval) to finalize round if time exceeded
+- [x] Failover scenario if leader instance get down
 
 ### Stage 5: WebSocket Gateway ⭐️
 - [x] WebSocket setup in Fastify
@@ -194,7 +195,7 @@ pnpm dev
 - [x] Broadcast round status + ticks
 - [x] Broadcast user scores
 - [x] Optimized broadcasting
-- [ ] Enforce single connection per user per round
+- [x] Enforce single connection per user per round
 
 ### Stage 6: Frontend (React + Vite) ⭐️
 - [ ] Setup Vite + React + TS

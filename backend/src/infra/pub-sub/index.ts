@@ -16,16 +16,14 @@ redisSub.connect()// todo: move to main
 class RedisPubSub implements IPubSub {
     constructor(private _pub: ReturnType<typeof createClient>, private _sub: ReturnType<typeof createClient>) {}
 
-    async publish(roundId: string, message: unknown): Promise<void> {
-        console.log(`Publish message to "${roundId}" topic: ${JSON.stringify(message)}`)
-        await this._pub.publish(roundId, JSON.stringify(message))
+    async publish(roundId: string, message: any): Promise<void> {
+        await this._pub.publish(roundId, JSON.stringify({...message, publisher: config.instance}))
     }
 
-    subscribe(roundId: string, cb: (message: unknown) => void): void {
+    subscribe(roundId: string, cb: (message: any) => void): void {
         this._sub.subscribe(roundId, (str: string) => {
             const message = JSON.parse(str)
-            console.log(`Receiver message from "${roundId}" topic: ${str}`)
-            cb(message)
+            cb({...message, subscriber: config.instance})
         })
     }
 

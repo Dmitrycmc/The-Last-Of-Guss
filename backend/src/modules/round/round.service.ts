@@ -5,7 +5,7 @@ import {BadRequestError, NotFoundError} from "../../errors/app-error";
 import {RoundInfo, Winner} from "./types";
 import {UserTokenData} from "../../types/user-token-data";
 import cache from "../../infra/cache";
-import pubSub from "../../infra/pubsub";
+import pubSub from "../../infra/pub-sub";
 
 class RoundService {
     async createRound(startAt: string, duration = 30) {
