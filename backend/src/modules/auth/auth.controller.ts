@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify'
 import authService from './auth.service'
 
-export async function authRoutes(app: FastifyInstance) {
+export async function authController(app: FastifyInstance) {
     app.post('/login', async (req, res) => {
         const { username, password } = req.body as any
         const token = await authService.loginUser(username, password)

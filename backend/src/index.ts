@@ -1,12 +1,9 @@
 import Fastify from 'fastify'
 import config from './config'
-import {authRoutes} from "./modules/auth/auth.controller";
-import {roundRoutes} from "./modules/round/round.controller";
+import {authController} from "./modules/auth/auth.controller";
+import {roundController} from "./modules/round/round.controller";
 import {authPlugin} from "./plugins/auth.plugin";
 import {errorHandlerPlugin} from "./plugins/error-handler.plugin";
-import pubSub from "./infra/pubsub";
-import {onScoreUpdate} from "./modules/round/round.subscriber";
-import wsController from "./modules/ws/ws.controller";
 
 const app = Fastify({
     logger: true
@@ -14,10 +11,8 @@ const app = Fastify({
 
 authPlugin(app)
 app.register(errorHandlerPlugin)
-app.register(authRoutes)
-app.register(roundRoutes)
-app.register(wsController)
-pubSub.subscribe(onScoreUpdate)
+app.register(authController)
+app.register(roundController)
 
 app.listen({ port: config.port, host: '0.0.0.0' }, err => {
     if (err) {
