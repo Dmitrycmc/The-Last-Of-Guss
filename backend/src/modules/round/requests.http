@@ -18,6 +18,6 @@ GET http://localhost:3000/rounds/{{roundId}}
 Authorization: Bearer {{jwt}}
 
 ### Handle tap
-POST http://localhost:3001/rounds/{{roundId}}/tap
+POST http://localhost/rounds/{{roundId}}/tap
 Authorization: Bearer {{jwt}}
 

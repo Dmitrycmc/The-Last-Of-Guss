@@ -192,7 +192,7 @@ pnpm dev
 - [x] WebSocket setup in Fastify
 - [ ] Handle connect/disconnect
 - [ ] Broadcast round status + ticks
-- [ ] Broadcast user scores
+- [x] Broadcast user scores
 - [ ] Enforce single connection per user per round
 
 ### Stage 6: Frontend (React + Vite) ⭐️

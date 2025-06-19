@@ -31,6 +31,8 @@ services:
     depends_on:
       - postgres
       - redis
+    environment:
+      INSTANCE: INSTANCE_1
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.guss.rule=Host(`localhost`)"
@@ -45,6 +47,8 @@ services:
     depends_on:
       - postgres
       - redis
+    environment:
+      INSTANCE: INSTANCE_2
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.guss.rule=Host(`localhost`)"
@@ -59,6 +63,8 @@ services:
     depends_on:
       - postgres
       - redis
+    environment:
+      INSTANCE: INSTANCE_3
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.guss.rule=Host(`localhost`)"
