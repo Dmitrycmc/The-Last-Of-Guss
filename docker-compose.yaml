@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   postgres:
     image: postgres:15
@@ -25,31 +26,54 @@ services:
     image: guss-backend
     ports:
       - "3001:3000"
+    env_file:
+      - .env
     depends_on:
       - postgres
       - redis
-    env_file:
-      - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.guss.rule=Host(`localhost`)"
+      - "traefik.http.services.guss.loadbalancer.server.port=3000"
 
   backend2:
     image: guss-backend
     ports:
       - "3002:3000"
+    env_file:
+      - .env
     depends_on:
       - postgres
       - redis
-    env_file:
-      - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.guss.rule=Host(`localhost`)"
+      - "traefik.http.services.guss.loadbalancer.server.port=3000"
 
   backend3:
     image: guss-backend
     ports:
       - "3003:3000"
+    env_file:
+      - .env
     depends_on:
       - postgres
       - redis
-    env_file:
-      - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.guss.rule=Host(`localhost`)"
+      - "traefik.http.services.guss.loadbalancer.server.port=3000"
+
+  traefik:
+    image: traefik:v2.11
+    ports:
+      - "80:80"
+    command:
+      - --api.dashboard=true
+      - --providers.docker=true
+      - --entrypoints.web.address=:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   postgres_data:

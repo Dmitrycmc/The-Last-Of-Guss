@@ -216,6 +216,7 @@ pnpm dev
 ### Stage 9: Deployment-Ready Setup ⭐️
 - [x] Add Dockerfile
 - [x] Add Redis + PostgreSQL in docker-compose
+- [x] Add load-balancer
 - [ ] Add entrypoint script for migrations + start
 - [ ] (Optional) Add healthcheck endpoints (/healthz, /readyz)
 
