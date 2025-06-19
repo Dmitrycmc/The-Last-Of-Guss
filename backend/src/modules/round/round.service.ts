@@ -70,7 +70,7 @@ class RoundService {
         if (!isActive) throw new BadRequestError('Round is not active')
 
         const score = await cache.incrementScore(roundId, user.id)
-        pubSub.publish(roundId, user.id, score)
+        pubSub.publish(roundId, {type: 'tap', userId: user.id, score})
 
         return { score }
     }

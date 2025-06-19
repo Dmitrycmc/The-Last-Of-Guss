@@ -191,7 +191,7 @@ pnpm dev
 ### Stage 5: WebSocket Gateway ⭐️
 - [x] WebSocket setup in Fastify
 - [x] Handle connect/disconnect
-- [ ] Broadcast round status + ticks
+- [x] Broadcast round status + ticks
 - [x] Broadcast user scores
 - [x] Optimized broadcasting
 - [ ] Enforce single connection per user per round

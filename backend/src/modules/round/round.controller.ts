@@ -7,11 +7,14 @@ import pubSub from "../../infra/pubsub";
 import {parseToken} from "../../utils/jwt";
 import {UserTokenData} from "../../types/user-token-data";
 import {RoundStatus} from "../../generated/prisma";
+import cache from "../../infra/cache";
+import {getRoundStatus} from "../../utils/round";
 
 export async function roundController(app: FastifyInstance) {
     const wss = new WebSocketServer({ server: app.server })
 
     wss.on('connection', async (ws, request) => {
+        // todo: move this to services
         const authHeader = request.headers.authorization
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -41,15 +44,47 @@ export async function roundController(app: FastifyInstance) {
             ws.close(1008, 'Round not found')
             return
         }
-        if (round.status !== RoundStatus.ACTIVE_STATUS) {
-            ws.close(1008, 'Round is not active')
+        if (round.status === RoundStatus.FINISHED_STATUS) {
+            ws.close(1008, 'Round is finished')
             return
         }
 
-        const handler = (userId: string, score: number) => {
+        if (round.status === RoundStatus.COOLDOWN_STATUS) {
+            const timeToStart = (round.startAt - new Date()) / 1000
+            const isLeader = await cache.acquireLock(roundId, Math.floor(timeToStart) + 2)
+            if (isLeader) {
+                console.log('Leader')
+                let remaining = Math.floor(timeToStart)
+                // todo: extract timer helpers
+                setTimeout(() => {
+                    let intervalId = setInterval(() => {
+                        if (remaining <= 0) {
+                            clearInterval(intervalId)
+                            pubSub.publish(roundId, {type: 'start'})
+
+                            remaining = (round.endAt - round.startAt) / 1000
+                            intervalId = setInterval(() => {
+                                if (remaining <= 0) {
+                                    clearInterval(intervalId)
+                                    pubSub.publish(roundId, {type: 'end'})
+                                } else {
+                                    pubSub.publish(roundId, {type: 'game-tick', remaining})
+                                    remaining--
+                                }
+                            }, 1000)
+                        } else {
+                            pubSub.publish(roundId, {type: 'cooldown-tick', remaining})
+                            remaining--
+                        }
+                    }, 1000)
+                }, timeToStart - remaining)
+            }
+        }
+
+        const handler = (message: unknown) => {
             if (ws.readyState === ws.OPEN) {
                 try {
-                    ws.send(JSON.stringify({ userId, score }))
+                    ws.send(JSON.stringify(message))
                 } catch (e) {
                     console.error('❌ WebSocket error:', e)
                     ws.terminate()
@@ -62,7 +97,7 @@ export async function roundController(app: FastifyInstance) {
         })
         ws.on('message', (str) => {
             try {
-                if (str.toString() === 'Tap') {
+                if (str.toString() === 'tap' && getRoundStatus(round.startAt, round.endAt) === RoundStatus.ACTIVE_STATUS) {
                     roundService.handleTap(roundId, user)
                 }
             } catch (e) {

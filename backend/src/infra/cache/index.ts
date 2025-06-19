@@ -16,6 +16,17 @@ class RedisCache implements ICache {
         const key = `score:${roundId}:${userId}`
         return await this._redis.incr(key)
     }
+
+    async acquireLock(roundId: string, ttl = 10): Promise<boolean> {
+        const key = `cooldown-lock:${roundId}`
+        return await this._redis.set(key, '1', { NX: true, EX: ttl })
+    }
+
+    async releaseLock(roundId: string): Promise<boolean> {
+        const key = `cooldown-lock:${roundId}`
+        const result = await this._redis.del(key)
+        return result === 1 // 1 = ключ был удалён, 0 = ключа не было
+    }
 }
 
 const cache: ICache = new RedisCache(redis)
