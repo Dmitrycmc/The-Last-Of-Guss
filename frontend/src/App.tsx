@@ -1,18 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import {Button} from "./components/ui/button";
+import LoginPage from "@/pages/login.page";
+import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import RoundPage from "@/pages/round.page";
+import RoundsListPage from "@/pages/rounds-list.page";
+import {storage} from "@/lib/storage";
+import {AppHeader} from "@/components/cells/header";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const token = storage.getToken()
+
+  if (token) {
+      return (
+          <BrowserRouter>
+              <AppHeader />
+              <Routes>
+                  <Route path="/rounds" element={<RoundsListPage />} />
+                  <Route path="/rounds/:roundId" element={<RoundPage />} />
+
+                  <Route path="*" element={<Navigate to="/rounds" replace />} />
+              </Routes>
+          </BrowserRouter>
+      )
+  }
 
   return (
-    <>
-      <h1 className="text-2xl font-bold mb-4">sa</h1>
-        <p className="text-2xl, bg-red-500">p text</p>
-      <Button>button</Button>
-    </>
+      <BrowserRouter>
+          <Routes>
+              <Route path="/login" element={<LoginPage />} />
+
+              <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+      </BrowserRouter>
   )
 }
 

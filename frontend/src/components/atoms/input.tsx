@@ -1,8 +1,14 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import {KeyboardEventHandler} from "react";
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+type Props = React.ComponentProps<"input"> & {
+    onEnter?: KeyboardEventHandler<HTMLInputElement>
+    onChangeValue?: (value: string) => void
+}
+
+function Input({ className, type, onEnter, onChangeValue, ...props }: Props) {
   return (
     <input
       type={type}
@@ -14,6 +20,16 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
         className
       )}
       {...props}
+      onKeyDown={e => {
+          if (e.key === 'Enter') {
+              onEnter?.(e)
+          }
+          props.onKeyDown?.(e)
+      }}
+      onChange={(e) => {
+          onChangeValue?.(e.target.value)
+          props.onChange?.(e)
+      }}
     />
   )
 }

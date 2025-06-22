@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/Dmitrycmc/The-Last-Of-Guss/issues"
   },
-  "homepage": "https://github.com/Dmitrycmc/The-Last-Of-Guss#readme"
+  "homepage": "https://github.com/Dmitrycmc/The-Last-Of-Guss#readme",
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "react-datepicker": "^8.4.0"
+  }
 }
