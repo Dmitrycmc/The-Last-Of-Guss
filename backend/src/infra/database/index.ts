@@ -30,7 +30,7 @@ class PrismaDataBase implements IDataBase {
 
     findAllRounds(): Promise<Round[]> {
         return this._prisma.round.findMany({
-            orderBy: { startAt: 'desc' }
+            orderBy: { createdAt: 'desc' }
         })
     }
 
@@ -40,9 +40,9 @@ class PrismaDataBase implements IDataBase {
         })
     }
 
-    findUserRoundScore(userId: string, roundId: string): Promise<UserRoundScore | null> {
+    findUserRoundScore(username: string, roundId: string): Promise<UserRoundScore | null> {
         return this._prisma.userRoundScore.findUnique({
-            where: { userId_roundId: { userId, roundId } }
+            where: { username_roundId: { username, roundId } }
         })
     }
 

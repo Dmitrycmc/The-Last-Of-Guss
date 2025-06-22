@@ -115,34 +115,6 @@ Client → Nginx (Reverse Proxy) → Multiple Fastify Instances
 
 ---
 
-## 📂 Project Structure
-
-```
-/backend
-  /prisma
-  /src
-    /errors
-    /modules
-      /auth
-      /round
-      /tap
-    /ws
-    /infra
-    /redis
-    /config.ts
-    /utils
-    /middlewares
-    /plugins
-
-/frontend
-  /src
-    /pages
-    /components
-    /store
-```
-
----
-
 ## 🚀 Getting Started
 
 ```bash
@@ -198,15 +170,15 @@ pnpm dev
 - [x] Enforce single connection per user per round
 
 ### Stage 6: Frontend (React + Vite) ⭐️
-- [ ] Setup Vite + React + TS
-- [ ] Login page (create or login user)
-- [ ] Round list with status indicators
-- [ ] Round page with goose + timer + tap
-- [ ] Live updates via WebSocket
+- [x] Setup Vite + React + TS
+- [x] Login page (create or login user)
+- [x] Round list with status indicators
+- [x] Round page with goose + timer + tap
+- [x] Live updates via WebSocket
 
 ### Stage 7: Zustand + UI (shadcn/ui) ⭐️
 - [ ] Setup Zustand store
-- [ ] UI with shadcn/ui
+- [x] UI with shadcn/ui
 - [ ] Optimistic UI for taps
 - [ ] Toasts/errors/loading states
 

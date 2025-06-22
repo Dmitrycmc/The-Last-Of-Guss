@@ -1,0 +1,1 @@
+export const tapsToScores = (taps: number): number => Math.floor(taps / 10) * 9 + taps

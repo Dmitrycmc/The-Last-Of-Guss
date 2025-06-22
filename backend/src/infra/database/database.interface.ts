@@ -11,7 +11,7 @@ export interface IDataBase {
 
     findRound(id: string): Promise<Round | null>;
 
-    findUserRoundScore(userId: string, roundId: string): Promise<UserRoundScore | null>
+    findUserRoundScore(username: string, roundId: string): Promise<UserRoundScore | null>
 
     findUserRoundScoreMax(roundId: string): Promise<UserRoundScore | null>
 }

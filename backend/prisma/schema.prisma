@@ -15,8 +15,7 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(uuid())
-  username String    @unique
+  username String    @id @unique
   password String
   role     Role
   scores   UserRoundScore[]
@@ -31,14 +30,14 @@ model Round {
 }
 
 model UserRoundScore {
-  userId  String
+  username  String
   roundId String
   score   Int       @default(0)
 
-  user    User      @relation(fields: [userId], references: [id])
+  user    User      @relation(fields: [username], references: [username])
   round   Round     @relation(fields: [roundId], references: [id])
 
-  @@id([userId, roundId])
+  @@id([username, roundId])
 }
 
 enum Role {

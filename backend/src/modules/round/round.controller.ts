@@ -11,21 +11,21 @@ import {getRoundStatus} from "../../utils/round";
 import pubSub from "../../infra/pub-sub";
 import {randomUUID} from "crypto";
 import database from "../../infra/database";
-import config from "../../config";
+import {parse} from "url";
+import {BadRequestError} from "../../errors/app-error";
 
 export async function roundController(app: FastifyInstance) {
     const wss = new WebSocketServer({ server: app.server })
 
     wss.on('connection', async (ws, request) => {
-        // todo: move this to services
-        const authHeader = request.headers.authorization
+        const { query } = parse(request.url || '', true)
+        const {token} = query as {token: unknown}
 
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            ws.close(1008, 'Missing or invalid Authorization header')
+        if (typeof token !== 'string' || !token) {
+            ws.close(1008, 'Missing token')
             return
         }
 
-        const token = authHeader.split(' ')[1]
         let user: UserTokenData
 
         try {
@@ -47,13 +47,17 @@ export async function roundController(app: FastifyInstance) {
             ws.close(1008, 'Round not found')
             return
         }
+
+        const scores = await cache.getRoundScores(roundId)
+        ws.send(JSON.stringify({type: 'update-score', scores}))
+
         if (getRoundStatus(round.startAt, round.endAt) === RoundStatus.FINISHED_STATUS) {
             ws.close(1008, 'Round is finished')
             return
         }
 
         const wsId = randomUUID()
-        pubSub.publish(roundId, {type: 'kick', userId: user.id, wsId})
+        pubSub.publish(roundId, {type: 'kick', username: user.username, wsId})
 
         const takeLeadership = () => {
             console.log('Took leadership')
@@ -107,7 +111,7 @@ export async function roundController(app: FastifyInstance) {
 
         const handler = (message: any) => {
             if (ws.readyState === ws.OPEN) {
-                if (message.type === 'kick' && message.userId === user.id && message.wsId !== wsId) {
+                if (message.type === 'kick' && message.username === user.username && message.wsId !== wsId) {
                     ws.close(4001, 'Another session started')
                     clearInterval(intervalId)
                     return
@@ -139,7 +143,12 @@ export async function roundController(app: FastifyInstance) {
 
     app.post('/rounds', { preHandler: [requireUser, requireAdminRole] }, async (req, res) => {
         const { startAt, duration } = req.body as { startAt: string, duration: number }
-
+        if (new Date(startAt) < new Date()) {
+            throw new BadRequestError("Game must start in the future")
+        }
+        if (duration < 15 || duration > 60) {
+            throw new BadRequestError("Game duration must be between 15 and 60 seconds")
+        }
         return await roundService.createRound(startAt, duration)
     })
 
@@ -149,6 +158,6 @@ export async function roundController(app: FastifyInstance) {
         const { id } = req.params as { id: string }
         const user = req.user!
 
-        return await roundService.getRoundInfo(id, user.id)
+        return await roundService.getRoundInfo(id, user.username)
     })
 }

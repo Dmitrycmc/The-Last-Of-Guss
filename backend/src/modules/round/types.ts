@@ -1,6 +1,6 @@
 import {RoundStatus} from "../../generated/prisma";
 
-export type Winner = { userId: string; score: number }
+export type Winner = { username: string; score: number }
 
 export type RoundInfo = {
     id: string,

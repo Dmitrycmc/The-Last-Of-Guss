@@ -12,10 +12,12 @@ class RoundService {
         const start = startAt ? new Date(startAt) : new Date()
         const end = new Date(start.getTime() + duration * 1000)
 
-        return await database.createRound({
+        const newRound = await database.createRound({
                 startAt: start,
                 endAt: end,
         })
+
+        return {...newRound, status: getRoundStatus(newRound.startAt, newRound.endAt)}
     }
 
     async getAllRounds() {
@@ -27,7 +29,7 @@ class RoundService {
         }))
     }
 
-    async getRoundInfo(roundId: string, userId?: string): Promise<RoundInfo> {
+    async getRoundInfo(roundId: string, username?: string): Promise<RoundInfo> {
         const round = await database.findRound(roundId)
 
         if (!round) {
@@ -37,8 +39,8 @@ class RoundService {
         const status = getRoundStatus(round.startAt, round.endAt)
 
         let score = 0
-        if (userId) {
-            const record = await database.findUserRoundScore(userId, roundId)
+        if (username) {
+            const record = await database.findUserRoundScore(username, roundId)
             if (record) {
                 score = record.score
             }
@@ -48,7 +50,7 @@ class RoundService {
         if (status === RoundStatus.FINISHED_STATUS) {
             const top = await database.findUserRoundScoreMax(roundId)
             if (top) {
-                winner = { userId: top.userId, score: top.score }
+                winner = { username: top.username, score: top.score }
             }
         }
 
@@ -62,17 +64,15 @@ class RoundService {
         }
     }
 
-    async handleTap(roundId: string, user: UserTokenData): Promise<{ score: number }> {
-        const round = await database.findRound(roundId)
+    async handleTap(roundId: string, user: UserTokenData): Promise<void> {
+        const round = await database.findRound(roundId) // cache
         if (!round) throw new NotFoundError("Round not found")
 
         const isActive = getRoundStatus(round.startAt, round.endAt) === RoundStatus.ACTIVE_STATUS
         if (!isActive) throw new BadRequestError('Round is not active')
 
-        const score = await cache.incrementScore(roundId, user.id)
-        pubSub.publish(roundId, {type: 'tap', userId: user.id, score})
-
-        return { score }
+        const score = await cache.incrementScore(roundId, user.username)
+        await pubSub.publish(roundId, {type: 'update-score', scores: {[user.username]: score}})
     }
 }
 
