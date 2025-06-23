@@ -58,7 +58,7 @@ function useRoundWebSocket(
     if (token === null) {
         throw new Error('Token is not provided')
     }
-    return useWebSocket(`/api/rounds/${roundId}`, {...options,  token})
+    return useWebSocket(`/rounds/${roundId}`, {...options,  token})
 }
 
 export default useRoundWebSocket

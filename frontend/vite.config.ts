@@ -14,7 +14,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://the-last-of-guss.onrender.com',
+        target: 'http://localhost',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, ''),
         ws: true

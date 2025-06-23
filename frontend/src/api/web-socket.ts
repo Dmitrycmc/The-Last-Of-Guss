@@ -18,9 +18,9 @@ export class ReconnectingWebSocket {
     private _onError?: (e: Event) => void;
 
     constructor(path: string, options: WSOptions = {}) {
-        const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+        const host = import.meta.env.VITE_WS_HOST;
         const tokenPart = options.token ? `?token=${options.token}` : '';
-        this._url = `${protocol}://${location.host}${path}${tokenPart}`;
+        this._url = `${host}${path}${tokenPart}`;
         this._reconnectDelay = options.reconnectDelay ?? 500;
         this._onMessage = options.onMessage;
         this._onOpen = options.onOpen;
