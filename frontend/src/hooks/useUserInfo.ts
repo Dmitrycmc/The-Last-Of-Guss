@@ -3,10 +3,13 @@ import {storage} from "@/lib/storage";
 import {useMemo} from "react";
 import {parseJwt} from "@/lib/jwt";
 
-const useUserInfo = (): DecodedUserToken | null => {
+const useUserInfo = (): DecodedUserToken => {
     return useMemo(() => {
         const token = storage.getToken()
-        return token && parseJwt(token) || null
+        if (!token) {
+            throw new Error('Missing auth token')
+        }
+        return parseJwt(token)
     }, [])
 }
 

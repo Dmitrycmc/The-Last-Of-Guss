@@ -8,6 +8,7 @@ import {formatTimeLeft} from "@/lib/format";
 import {Progress} from "@/components/atoms/progress";
 import useUserInfo from "@/hooks/useUserInfo";
 import useRoundWebSocket from "@/hooks/useWebSocket";
+import {cn} from "@/lib/utils";
 
 
 export default function RoundPage() {
@@ -15,11 +16,12 @@ export default function RoundPage() {
     const [round, setRound] = useState<Round | null>(null);
     const [loading, setLoading] = useState(true);
     const [scores, setScores] = useState<Record<string, number>>({});
-    const [pending, setPending] = useState<number>(0);
     const [cooldown, setCooldown] = useState<number | null>(null);
     const [gameTimeLeft, setGameTimeLeft] = useState<number | null>(null);
 
     const userInfo = useUserInfo()
+
+    const selfScores = scores[userInfo.username]
 
     const gameDuration = useMemo(() => round && (new Date(round.endAt).getTime() - new Date(round.startAt).getTime()), [round])
     const timeToStart = useMemo(() => round && (new Date(round.startAt).getTime() - Date.now()), [round])
@@ -33,15 +35,21 @@ export default function RoundPage() {
     }, [roundId]);
 
     const handleMessage = (m: unknown) => {
+        console.log('Received message: ', m)
         const {type} = m as {type: string}
         if (type === "update-score") {
             const {scores} = m as {type: string, scores: Record<string, number>}
-            const updatedUsernames = Object.keys(scores)
-            setScores(prev => {
-                if (updatedUsernames.length === 1 && updatedUsernames[0] === userInfo?.username) {
-                    setPending(p => p - 1)
+            setScores(s => {
+                const merged = { ...s, ...scores };
+
+                const optimisticSelfScores = s[userInfo.username];
+
+                if (optimisticSelfScores !== undefined && selfScores !== undefined) {
+                    merged[userInfo.username] = Math.max(optimisticSelfScores, selfScores);
+                } else if (optimisticSelfScores !== undefined || selfScores !== undefined) {
+                    merged[userInfo.username] = optimisticSelfScores ?? selfScores;
                 }
-                const merged = { ...prev, ...scores };
+
                 const sortedEntries = Object.entries(merged).sort((a, b) => b[1] - a[1]);
                 return Object.fromEntries(sortedEntries);
             });
@@ -62,10 +70,18 @@ export default function RoundPage() {
     };
 
     const [sendToWs, isConnected] = useRoundWebSocket(roundId, {onMessage: handleMessage})
+    const [bonusFlash, setBonusFlash] = useState(false)
 
     const handleTap = async () => {
+        if ((selfScores + 10) % 20 === 0) {
+            setBonusFlash(true);
+            setTimeout(() => setBonusFlash(false), 1000); // ореол гаснет через 1 сек
+        }
         try {
-            setPending(p => p + 1)
+            setScores(s => ({
+                ...s,
+                [userInfo.username]: (s[userInfo.username] || 0) + 1
+            }))
             sendToWs("tap");
         } catch (e) {
             console.error("Failed to tap", e);
@@ -114,9 +130,11 @@ export default function RoundPage() {
 
             <div
                 onClick={handleTap}
-                className={`text-[300px] select-none cursor-pointer transition active:scale-90 ${
-                    round.status !== RoundStatus.ACTIVE_STATUS ? 'opacity-50 pointer-events-none' : ''
-                }`}
+                className={cn(
+                    "text-[300px] select-none cursor-pointer transition active:scale-90",
+                    round.status !== RoundStatus.ACTIVE_STATUS && "opacity-50 pointer-events-none",
+                    bonusFlash && "ring-8 ring-yellow-400 animate-ping rounded-full"
+                )}
             >
                 🪿
             </div>
@@ -138,7 +156,7 @@ export default function RoundPage() {
                             {index === 0 && <span className="mr-1">🏆</span>}
                             {userId}
                         </td>
-                        <td className="px-4 py-2 text-right">{score + pending}</td>
+                        <td className="px-4 py-2 text-right">{selfScores}</td>
                     </tr>
                 ) : (
                     <tr
