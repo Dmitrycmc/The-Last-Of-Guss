@@ -6,7 +6,7 @@ type WSOptions = {
     token?: string;
     reconnectDelay?: number;
     onOpen?: () => void;
-    onMessage?: (msg: any) => void;
+    onMessage?: (msg: unknown) => void;
     onClose?: (ev: CloseEvent) => void;
     onError?: (ev: Event) => void;
 };

@@ -6,14 +6,13 @@ class HttpRequest {
 
     private async get(path: string, {payload, withToken}: {payload?: Record<string, string>, withToken?: boolean}  = {}) {
         const fullPath = payload ? `${this._prefix}${path}?${new URLSearchParams(payload)}` : `${this._prefix}${path}`
-        const headers = {
+        const headers: Record<string, string> = {
             'Content-Type': 'application/json'
         }
         if (withToken) {
             if (this._token === null) {
                 throw new Error('Token is not provided')
             }
-            // @ts-ignore
             headers['Authorization'] = `Bearer ${this._token}`
         }
         const res = await fetch(fullPath, {headers})
@@ -32,7 +31,6 @@ class HttpRequest {
             if (this._token === null) {
                 throw new Error('Token is not provided')
             }
-            // @ts-ignore
             headers['Authorization'] = `Bearer ${this._token}`
         }
         const res = await fetch(fullPath, {

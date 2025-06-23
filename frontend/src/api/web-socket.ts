@@ -2,7 +2,7 @@ type WSOptions = {
     token?: string;
     reconnectDelay?: number;
     onOpen?: () => void;
-    onMessage?: (msg: any) => void;
+    onMessage?: (msg: unknown) => void;
     onClose?: (v: CloseEvent) => void;
     onError?: (v: Event) => void;
 };
@@ -12,7 +12,7 @@ export class ReconnectingWebSocket {
     private _ws: WebSocket | null = null;
     private _shouldReconnect = true;
     private _reconnectDelay: number;
-    private _onMessage?: (msg: any) => void;
+    private _onMessage?: (msg: unknown) => void;
     private _onOpen?: () => void;
     private _onClose?: (e: CloseEvent) => void;
     private _onError?: (e: Event) => void;
@@ -42,7 +42,7 @@ export class ReconnectingWebSocket {
             try {
                 const msg = JSON.parse(event.data);
                 this._onMessage?.(msg);
-            } catch (e) {
+            } catch {
                 console.warn('[WS] Invalid message:', event.data);
             }
         };

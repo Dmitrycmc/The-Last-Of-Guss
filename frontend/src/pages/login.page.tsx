@@ -20,7 +20,7 @@ export default function LoginPage() {
             console.log(data)
             storage.setToken(data.token)
             window.location.assign('/rounds')
-        } catch (e) {
+        } catch {
             setError(`Incorrect password`)
         }
     }

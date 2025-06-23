@@ -3,7 +3,6 @@ import type {FC} from "react";
 import { Button } from "@/components/atoms/button";
 import {httpRequest} from "@/api";
 import type {Round} from "@/types/round";
-import {useNavigate} from "react-router-dom";
 import {Card, CardContent} from "@/components/atoms/card";
 
 type Props = {
@@ -20,7 +19,7 @@ const AdminCreateRoundPanel: FC<Props> = ({onAdd}) => {
         try {
             const newRound = await httpRequest.createRound()
             onAdd(newRound)
-        } catch (err: any) {
+        } catch (err) {
             setError("Error: " + (err.message || JSON.stringify(err)));
         } finally {
             setLoading(false);

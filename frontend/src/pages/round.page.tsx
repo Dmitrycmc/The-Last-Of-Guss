@@ -32,7 +32,7 @@ export default function RoundPage() {
             .finally(() => setLoading(false));
     }, [roundId]);
 
-    const handleMessage = (m: any) => {
+    const handleMessage = (m: unknown) => {
         if (m.type === "update-score") {
             const {scores} = m as {scores: Record<string, number>}
             const updatedUsernames = Object.keys(scores)
