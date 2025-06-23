@@ -33,8 +33,9 @@ export default function RoundPage() {
     }, [roundId]);
 
     const handleMessage = (m: unknown) => {
-        if (m.type === "update-score") {
-            const {scores} = m as {scores: Record<string, number>}
+        const {type} = m as {type: string}
+        if (type === "update-score") {
+            const {scores} = m as {type: string, scores: Record<string, number>}
             const updatedUsernames = Object.keys(scores)
             setScores(prev => {
                 if (updatedUsernames.length === 1 && updatedUsernames[0] === userInfo?.username) {
@@ -44,15 +45,17 @@ export default function RoundPage() {
                 const sortedEntries = Object.entries(merged).sort((a, b) => b[1] - a[1]);
                 return Object.fromEntries(sortedEntries);
             });
-        } else if (m.type === "cooldown-tick") {
-            setCooldown(m.remaining);
-        } else if (m.type === "start") {
+        } else if (type === "cooldown-tick") {
+            const {remaining} = m as {type: string, remaining: number}
+            setCooldown(remaining);
+        } else if (type === "start") {
             setCooldown(null);
             setGameTimeLeft(null);
             setRound(r => r && ({...r, status: RoundStatus.ACTIVE_STATUS}))
-        } else if (m.type === "game-tick") {
-            setGameTimeLeft(m.remaining);
-        } else if (m.type === "end") {
+        } else if (type === "game-tick") {
+            const {remaining} = m as {type: string, remaining: number}
+            setGameTimeLeft(remaining);
+        } else if (type === "end") {
             setGameTimeLeft(null);
             setRound(r => r && ({...r, status: RoundStatus.FINISHED_STATUS}))
         }

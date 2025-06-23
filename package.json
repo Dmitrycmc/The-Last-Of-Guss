@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "Multiplayer browser game where players compete in tapping a mutated goose. Each game round has a `cooldown` and `duration`, stores player scores, winner, and real-time game status. The game is built with WebSocket and supports horizontal scaling.",
   "scripts": {
-    "dev:front": "yarn --cwd ./frontend dev",
-    "dev:back": "docker-compose up",
-    "build-image:back": "yarn --cwd ./backend docker"
+    "front:dev": "yarn --cwd ./frontend dev",
+    "front:build": "yarn --cwd ./frontend build",
+    "back:dev": "docker-compose up",
+    "back:build": "yarn --cwd ./backend build",
+    "back:build-image": "yarn --cwd ./backend docker",
+    "prepare": "husky",
+    "precommit": "yarn back:build && yarn front:build"
   },
   "repository": {
     "type": "git",
@@ -16,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/Dmitrycmc/The-Last-Of-Guss/issues"
   },
-  "homepage": "https://github.com/Dmitrycmc/The-Last-Of-Guss#readme"
+  "homepage": "https://github.com/Dmitrycmc/The-Last-Of-Guss#readme",
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
 }

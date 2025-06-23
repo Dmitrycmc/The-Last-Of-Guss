@@ -23,7 +23,7 @@ class HttpRequest {
 
     private async post(path: string, {payload, withToken}: {payload?: Record<string, string>, withToken?: boolean}  = {}) {
         const fullPath = `${this._prefix}${path}`
-        const headers = {}
+        const headers: Record<string, string> = {}
         if (payload) {
             headers['Content-Type'] = 'application/json'
         }

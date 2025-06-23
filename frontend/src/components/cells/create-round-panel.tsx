@@ -11,7 +11,7 @@ type Props = {
 
 const AdminCreateRoundPanel: FC<Props> = ({onAdd}) => {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string>('');
+    const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -20,7 +20,11 @@ const AdminCreateRoundPanel: FC<Props> = ({onAdd}) => {
             const newRound = await httpRequest.createRound()
             onAdd(newRound)
         } catch (err) {
-            setError("Error: " + (err.message || JSON.stringify(err)));
+            if (err instanceof Error) {
+                setError("Error: " + err.message);
+            } else {
+                setError("Error: " + JSON.stringify(err));
+            }
         } finally {
             setLoading(false);
         }
