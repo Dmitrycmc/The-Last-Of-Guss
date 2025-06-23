@@ -2,7 +2,7 @@
 
 Multiplayer browser game where players compete in tapping a mutated goose. Each game round has a `cooldown` and `duration`, stores player scores, winner, and real-time game status. The game is built with WebSocket and supports horizontal scaling.
 
-https://the-last-of-guss-ngbn.onrender.com/
+https://the-last-of-guss.onrender.com/
 ---
 
 ## 🧱 Tech Stack
