@@ -8,7 +8,8 @@
     "dev": "tsx watch src/index.ts",
     "build": "yarn prisma generate && tsc && cp -r src/generated dist/generated",
     "start": "node dist/index.js",
-    "docker": "docker build -t guss-backend ."
+    "docker": "docker build -t guss-backend .",
+    "prisma:migrate": "prisma migrate deploy"
   },
   "keywords": [],
   "author": "",

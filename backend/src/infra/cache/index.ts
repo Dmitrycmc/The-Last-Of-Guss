@@ -8,7 +8,9 @@ const redis = createClient({
 })
 
 redis.on('error', (err) => console.error('❌ Redis error:', err))
-redis.connect() // todo: move to main
+redis.connect().then(() => {
+    console.log("Redis successfully connected")
+}) // todo: move to main
 
 class RedisCache implements ICache {
     constructor(private _redis: ReturnType<typeof createClient>) {}

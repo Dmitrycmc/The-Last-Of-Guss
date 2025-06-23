@@ -20,4 +20,4 @@ RUN yarn build
 EXPOSE 3000
 
 # Default command (can be overridden)
-CMD ["yarn", "start"]
+CMD ["sh", "-c", "yarn prisma migrate deploy && yarn start"]
