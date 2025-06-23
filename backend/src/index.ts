@@ -4,6 +4,7 @@ import {authController} from "./modules/auth/auth.controller";
 import {roundController} from "./modules/round/round.controller";
 import {authPlugin} from "./plugins/auth.plugin";
 import {errorHandlerPlugin} from "./plugins/error-handler.plugin";
+import {rootController} from "./modules/root/root.controller";
 
 const app = Fastify({
     logger: true
@@ -11,6 +12,7 @@ const app = Fastify({
 
 authPlugin(app)
 app.register(errorHandlerPlugin)
+app.register(rootController)
 app.register(authController)
 app.register(roundController)
 
