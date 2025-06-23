@@ -2,6 +2,7 @@
 
 Multiplayer browser game where players compete in tapping a mutated goose. Each game round has a `cooldown` and `duration`, stores player scores, winner, and real-time game status. The game is built with WebSocket and supports horizontal scaling.
 
+https://the-last-of-guss-ngbn.onrender.com/
 ---
 
 ## 🧱 Tech Stack
@@ -191,8 +192,9 @@ pnpm dev
 - [x] Add Dockerfile
 - [x] Add Redis + PostgreSQL in docker-compose
 - [x] Add load-balancer
-- [ ] Add entrypoint script for migrations + start
+- [x] Add entrypoint script for migrations + start
 - [ ] (Optional) Add healthcheck endpoints (/healthz, /readyz)
+- [x] Deployed and configured deploy on push
 
 ### Stage 10: CI/CD ⭐️
 - [ ] Add GitHub Actions workflow for backend
