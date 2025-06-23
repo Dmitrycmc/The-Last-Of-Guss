@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
-import {KeyboardEventHandler} from "react";
+import type {KeyboardEventHandler} from "react";
 
 type Props = React.ComponentProps<"input"> & {
     onEnter?: KeyboardEventHandler<HTMLInputElement>

@@ -12,7 +12,6 @@ export class ReconnectingWebSocket {
     private _ws: WebSocket | null = null;
     private _shouldReconnect = true;
     private _reconnectDelay: number;
-    private _token?: string;
     private _onMessage?: (msg: any) => void;
     private _onOpen?: () => void;
     private _onClose?: (e: CloseEvent) => void;
@@ -23,7 +22,6 @@ export class ReconnectingWebSocket {
         const tokenPart = options.token ? `?token=${options.token}` : '';
         this._url = `${protocol}://${location.host}${path}${tokenPart}`;
         this._reconnectDelay = options.reconnectDelay ?? 500;
-        this._token = options.token;
         this._onMessage = options.onMessage;
         this._onOpen = options.onOpen;
         this._onClose = options.onClose;
@@ -65,7 +63,7 @@ export class ReconnectingWebSocket {
 
     public send(data: unknown) {
         if (this.isConnected()) {
-            this._ws.send(typeof data === 'string' ? data : JSON.stringify(data));
+            this._ws?.send(typeof data === 'string' ? data : JSON.stringify(data));
         } else {
             console.log('WS is closed')
         }

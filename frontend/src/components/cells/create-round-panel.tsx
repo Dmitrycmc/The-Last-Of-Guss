@@ -1,4 +1,5 @@
-import { useState } from "react";
+import {useState} from "react";
+import type {FC} from "react";
 import { Button } from "@/components/atoms/button";
 import { Input } from "@/components/atoms/input";
 import { Label } from "@/components/atoms/label";
@@ -6,8 +7,13 @@ import { Card, CardContent } from "@/components/atoms/card";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {httpRequest} from "@/api";
+import type {Round} from "@/types/round";
 
-export default function AdminCreateRoundPanel({onAdd}) {
+type Props = {
+    onAdd: (round: Round) => void
+}
+
+const AdminCreateRoundPanel: FC<Props> = ({onAdd}) => {
     const [startAt, setStartAt] = useState<Date>(new Date(new Date().getTime() + 60000));
     const [duration, setDuration] = useState<number>(30);
     const [loading, setLoading] = useState(false);
@@ -36,7 +42,7 @@ export default function AdminCreateRoundPanel({onAdd}) {
                         <div className="[&>div]:w-full">
                             <DatePicker
                                 selected={startAt}
-                                onChange={(date: Date) => setStartAt(date)}
+                                onChange={(date: Date | null) => date && setStartAt(date)}
                                 showTimeSelect
                                 timeFormat="HH:mm"
                                 timeIntervals={1}
@@ -64,3 +70,5 @@ export default function AdminCreateRoundPanel({onAdd}) {
         </div>
     );
 }
+
+export default AdminCreateRoundPanel

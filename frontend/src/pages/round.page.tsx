@@ -11,7 +11,7 @@ import useRoundWebSocket from "@/hooks/useWebSocket";
 
 
 export default function RoundPage() {
-    const { roundId } = useParams();
+    const roundId = useParams().roundId as string;
     const [round, setRound] = useState<Round | null>(null);
     const [loading, setLoading] = useState(true);
     const [scores, setScores] = useState<Record<string, number>>({});
@@ -21,12 +21,10 @@ export default function RoundPage() {
 
     const userInfo = useUserInfo()
 
-    const gameDuration = useMemo(() => round && (new Date(round.endAt) - new Date(round.startAt)), [round])
-    const timeToStart = useMemo(() => round && (new Date(round.startAt) - Date.now()), [round])
+    const gameDuration = useMemo(() => round && (new Date(round.endAt).getTime() - new Date(round.startAt).getTime()), [round])
+    const timeToStart = useMemo(() => round && (new Date(round.startAt).getTime() - Date.now()), [round])
 
     useEffect(() => {
-        if (!roundId) return;
-
         httpRequest
             .getRoundInfo(roundId)
             .then(setRound)
@@ -35,28 +33,28 @@ export default function RoundPage() {
     }, [roundId]);
 
     const handleMessage = (m: any) => {
-        console.log(m)
         if (m.type === "update-score") {
-            const updatedUsernames = Object.keys(m.scores)
-                setScores(prev => {
-                    if (updatedUsernames.length === 1 && updatedUsernames[0] === userInfo?.username) {
-                        setPending(p => p - 1)
-                    }
-                    const merged = { ...prev, ...m.scores };
-                    const sortedEntries = Object.entries(merged).sort((a, b) => b[1] - a[1]);
-                    return Object.fromEntries(sortedEntries);
-                });
+            const {scores} = m as {scores: Record<string, number>}
+            const updatedUsernames = Object.keys(scores)
+            setScores(prev => {
+                if (updatedUsernames.length === 1 && updatedUsernames[0] === userInfo?.username) {
+                    setPending(p => p - 1)
+                }
+                const merged = { ...prev, ...scores };
+                const sortedEntries = Object.entries(merged).sort((a, b) => b[1] - a[1]);
+                return Object.fromEntries(sortedEntries);
+            });
         } else if (m.type === "cooldown-tick") {
             setCooldown(m.remaining);
         } else if (m.type === "start") {
             setCooldown(null);
             setGameTimeLeft(null);
-            setRound(r => ({...r, status: RoundStatus.ACTIVE_STATUS}))
+            setRound(r => r && ({...r, status: RoundStatus.ACTIVE_STATUS}))
         } else if (m.type === "game-tick") {
             setGameTimeLeft(m.remaining);
         } else if (m.type === "end") {
             setGameTimeLeft(null);
-            setRound(r => ({...r, status: RoundStatus.FINISHED_STATUS}))
+            setRound(r => r && ({...r, status: RoundStatus.FINISHED_STATUS}))
         }
     };
 
@@ -78,7 +76,7 @@ export default function RoundPage() {
     return (
         <div className="p-4">
             <h1 className="text-2xl font-bold mb-2">
-                Round {roundId?.slice(0, 6)}
+                Round {roundId.slice(0, 6)}
             </h1>
             <div className="mb-4">
                 <span className="font-medium">Status:</span>{" "}

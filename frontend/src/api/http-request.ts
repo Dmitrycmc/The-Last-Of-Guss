@@ -5,7 +5,7 @@ class HttpRequest {
     constructor(private _prefix: string, private _token: string | null) {}
 
     private async get(path: string, {payload, withToken}: {payload?: Record<string, string>, withToken?: boolean}  = {}) {
-        const fullPath = payload ? `${this._prefix}/${path}?${new URLSearchParams(payload)}` : `${this._prefix}/${path}`
+        const fullPath = payload ? `${this._prefix}${path}?${new URLSearchParams(payload)}` : `${this._prefix}${path}`
         const headers = {
             'Content-Type': 'application/json'
         }
@@ -13,6 +13,7 @@ class HttpRequest {
             if (this._token === null) {
                 throw new Error('Token is not provided')
             }
+            // @ts-ignore
             headers['Authorization'] = `Bearer ${this._token}`
         }
         const res = await fetch(fullPath, {headers})
@@ -30,6 +31,7 @@ class HttpRequest {
             if (this._token === null) {
                 throw new Error('Token is not provided')
             }
+            // @ts-ignore
             headers['Authorization'] = `Bearer ${this._token}`
         }
         const res = await fetch(fullPath, {

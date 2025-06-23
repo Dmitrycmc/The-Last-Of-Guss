@@ -56,7 +56,7 @@ export default function RoundsListPage() {
                             <TableCell>
                                 {new Date(r.startAt).toLocaleString()}
                             </TableCell>
-                            <TableCell>{(new Date(r.endAt) - new Date(r.startAt)) / 1000}s</TableCell>
+                            <TableCell>{(new Date(r.endAt).getTime() - new Date(r.startAt).getTime()) / 1000}s</TableCell>
                             <TableCell>{r.createdAt}</TableCell>
                         </TableRow>
                     ))}
