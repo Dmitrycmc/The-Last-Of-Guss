@@ -8,9 +8,9 @@ import cache from "../../infra/cache";
 import pubSub from "../../infra/pub-sub";
 
 class RoundService {
-    async createRound(startAt: string, duration = 30) {
-        const start = startAt ? new Date(startAt) : new Date()
-        const end = new Date(start.getTime() + duration * 1000)
+    async createRound(cooldownDuration: number, roundDuration: number) {
+        const start = new Date(Date.now() + cooldownDuration * 1000)
+        const end = new Date(Date.now() + cooldownDuration * 1000 + roundDuration * 1000)
 
         const newRound = await database.createRound({
                 startAt: start,

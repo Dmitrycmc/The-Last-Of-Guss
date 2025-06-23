@@ -12,7 +12,7 @@ import pubSub from "../../infra/pub-sub";
 import {randomUUID} from "crypto";
 import database from "../../infra/database";
 import {parse} from "url";
-import {BadRequestError} from "../../errors/app-error";
+import config from "../../config";
 
 export async function roundController(app: FastifyInstance) {
     const wss = new WebSocketServer({ server: app.server })
@@ -142,14 +142,7 @@ export async function roundController(app: FastifyInstance) {
     })
 
     app.post('/rounds', { preHandler: [requireUser, requireAdminRole] }, async (req, res) => {
-        const { startAt, duration } = req.body as { startAt: string, duration: number }
-        if (new Date(startAt) < new Date()) {
-            throw new BadRequestError("Game must start in the future")
-        }
-        if (duration < 15 || duration > 60) {
-            throw new BadRequestError("Game duration must be between 15 and 60 seconds")
-        }
-        return await roundService.createRound(startAt, duration)
+        return await roundService.createRound(config.cooldownDuration, config.roundDuration)
     })
 
     app.get('/rounds', { preHandler: requireUser }, async (req, res) => await roundService.getAllRounds())

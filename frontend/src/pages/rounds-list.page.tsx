@@ -26,8 +26,8 @@ export default function RoundsListPage() {
         navigate(`/rounds/${roundId}`)
     }
 
-    const appendRound = (round: Round): void => {
-        setRounds(rounds => [round, ...rounds])
+    const onRoundCreate = (round: Round): void => {
+        navigate(`/rounds/${round.id}`)
     }
 
     if (loading) return <div className="p-4">Loading...</div>
@@ -35,7 +35,7 @@ export default function RoundsListPage() {
     return (
         <div className="p-4">
             {userInfo?.role === Role.ADMIN_ROLE && (
-                <AdminCreateRoundPanel onAdd={appendRound} />
+                <AdminCreateRoundPanel onAdd={onRoundCreate} />
             )}
             <Table>
                 <TableCaption>All rounds available in the game</TableCaption>

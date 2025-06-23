@@ -24,8 +24,9 @@ class HttpRequest {
 
     private async post(path: string, {payload, withToken}: {payload?: Record<string, string>, withToken?: boolean}  = {}) {
         const fullPath = `${this._prefix}${path}`
-        const headers = {
-            'Content-Type': 'application/json'
+        const headers = {}
+        if (payload) {
+            headers['Content-Type'] = 'application/json'
         }
         if (withToken) {
             if (this._token === null) {
@@ -64,9 +65,8 @@ class HttpRequest {
         return this.get(`/rounds/${id}`, {withToken: true})
     }
 
-    async createRound(startAt: Date, duration: number): Promise<Round> {
+    async createRound(): Promise<Round> {
         return await this.post(`/rounds`, {
-            payload: {startAt: startAt.toISOString(), duration: duration.toString()},
             withToken: true
         })
     }
