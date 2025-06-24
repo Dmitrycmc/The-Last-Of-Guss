@@ -35,7 +35,12 @@ const AdminCreateRoundPanel: FC<Props> = ({onAdd}) => {
             <h1 className="text-2xl font-semibold mb-4 text-center">Admin panel</h1>
             <Card>
                 <CardContent className="space-y-4 pt-6">
-                    <Button onClick={handleSubmit} disabled={loading} className="w-full">
+                    <Button
+                        onClick={handleSubmit}
+                        disabled={loading}
+                        variant="outline"
+                        className={`w-full`}
+                    >
                         {loading ? "Creating..." : "Create Round"}
                     </Button>
                     {error && <p className="text-sm text-destructive">{error}</p>}

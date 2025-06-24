@@ -18,7 +18,6 @@ type Props = {
 }
 
 export const GameScreen: FC<Props> = ({round, userInfo, setRound, scores, setScores}) => {
-
     const [cooldown, setCooldown] = useState<number | null>(null);
     const [gameTimeLeft, setGameTimeLeft] = useState<number | null>(null);
     const [leader, setLeader] = useState<string | null>(null);
@@ -114,15 +113,17 @@ export const GameScreen: FC<Props> = ({round, userInfo, setRound, scores, setSco
             </span>
             </div>
 
-            {cooldown !== null && timeToStart && (
+            {timeToStart && (
                 <div className="mb-4">
-                    <div className="text-yellow-600 font-semibold mb-1">
-                        Game starts in:
-                        {formatTimeLeft(cooldown).map((part, idx) => (
-                            <p key={idx}>{part}</p>
-                        ))}
-                    </div>
-                    <Progress value={((timeToStart - cooldown * 1000) / timeToStart) * 100} className="bg-yellow-100 [&>div]:bg-yellow-500"/>
+                    {cooldown !== null && (
+                        <div className="text-yellow-600 font-semibold mb-1">
+                            Game starts in:
+                            {formatTimeLeft(cooldown).map((part, idx) => (
+                                <p key={idx}>{part}</p>
+                            ))}
+                        </div>
+                    )}
+                    <Progress value={cooldown === null ? 0 : ((timeToStart - cooldown * 1000) / timeToStart) * 100} className="bg-yellow-100 [&>div]:bg-yellow-500"/>
                 </div>
             )}
 
