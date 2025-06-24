@@ -34,11 +34,20 @@ export const DeveloperPanel: FC<Props> = ({ data }) => {
             <div className="font-semibold text-gray-700">Network</div>
             {Object.entries(data).map(([key, value]) => {
                 const colorClass = value ? valueColorMap.get(value) : "text-gray-400";
+
+                const display =
+                    value && value.length > 20
+                        ? "…" + value.slice(-6)
+                        : value ?? "—";
+
                 return (
                     <div key={key} className="flex justify-between gap-2">
                         <span className="text-gray-500">{key}:</span>
-                        <span className={`font-mono text-right break-all px-1 rounded ${colorClass}`}>
-                            {value ?? "—"}
+                        <span
+                            className={`font-mono text-right break-all px-1 rounded ${colorClass}`}
+                            title={value ?? ""}
+                        >
+                            {display}
                         </span>
                     </div>
                 );
