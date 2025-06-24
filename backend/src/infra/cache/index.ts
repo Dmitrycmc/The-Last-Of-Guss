@@ -33,6 +33,12 @@ class RedisCache implements ICache {
         return result;
     }
 
+    setScore(roundId: string, username: string, value: number): number {
+        const key = `taps:${roundId}:${username}`
+        this._redis.set(key, value)
+        return tapsToScores(value)
+    }
+
     async incrementScore(roundId: string, username: string): Promise<number> {
         const key = `taps:${roundId}:${username}`
         const taps = await this._redis.incr(key)

@@ -1,4 +1,4 @@
-import {Prisma, Round, User, UserRoundScore} from "../../generated/prisma";
+import {Prisma, Round, User} from "../../generated/prisma";
 
 export interface IDataBase {
     createUser(user: Prisma.UserCreateInput): Promise<User>;
@@ -11,7 +11,7 @@ export interface IDataBase {
 
     findRound(id: string): Promise<Round | null>;
 
-    findUserRoundScore(username: string, roundId: string): Promise<UserRoundScore | null>
+    getRoundResults(roundId: string): Promise<Record<string, number>>
 
-    findUserRoundScoreMax(roundId: string): Promise<UserRoundScore | null>
+    writeRoundScores(roundId: string, scores: Record<string, number>): Promise<void>
 }

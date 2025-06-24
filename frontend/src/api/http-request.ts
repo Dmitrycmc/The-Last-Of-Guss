@@ -1,5 +1,5 @@
 import {storage} from "@/lib/storage";
-import type {Round} from "@/types/round";
+import type {Round, RoundInfo} from "@/types/round";
 
 class HttpRequest {
     constructor(private _prefix: string, private _token: string | null) {}
@@ -59,7 +59,7 @@ class HttpRequest {
         return this.get('/rounds', {withToken: true})
     }
 
-    getRoundInfo(id: string): Promise<Round> {
+    getRoundInfo(id: string): Promise<RoundInfo> {
         return this.get(`/rounds/${id}`, {withToken: true})
     }
 

@@ -7,6 +7,5 @@ export type RoundInfo = {
     startAt: Date,
     endAt: Date,
     status: RoundStatus,
-    score: number,
-    winner: Winner | null
+    scores: Record<string, number>,
 }

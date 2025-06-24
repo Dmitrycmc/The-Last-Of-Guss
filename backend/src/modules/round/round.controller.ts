@@ -88,6 +88,7 @@ export async function roundController(app: FastifyInstance) {
                             clearInterval(intervalId)
                             cache.getRoundScores(roundId).then(scores => {
                                 pubSub.publish(roundId, {type: 'end', scores })
+                                database.writeRoundScores(roundId, scores)
                             })
                         } else {
                             cache.prolongateLock(roundId)

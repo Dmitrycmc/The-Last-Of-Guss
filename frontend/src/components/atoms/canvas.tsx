@@ -9,12 +9,18 @@ interface FloatingText {
     type: "normal" | "bonus";
 }
 
-interface GooseCanvasProps {
+interface Props {
     disabled?: boolean
+    zeroMode?: boolean
     onTap?: (onBonus: () => void) => void;
 }
 
-export const GooseCanvas: FC<GooseCanvasProps> = ({ disabled, onTap }) => {
+const EMOJIS = ["😈", "🤡", "😤", "💨", "🫠", "😹", "😵‍💫", "🤷‍♂️", "💀", "🧟‍♂️", "😡", "😠"];
+function getRandomEmoji() {
+    return EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+}
+
+export const GooseCanvas: FC<Props> = ({ disabled, zeroMode, onTap }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const floatingTextsRef = useRef<FloatingText[]>([]);
 
@@ -80,7 +86,7 @@ export const GooseCanvas: FC<GooseCanvasProps> = ({ disabled, onTap }) => {
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        floatingTextsRef.current.push({ x, y, text: "+9", opacity: 1, type: "bonus" });
+        floatingTextsRef.current.push({ x, y, text: zeroMode ? getRandomEmoji() : "+9", opacity: 1, type: "bonus" });
     };
 
     const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -90,7 +96,7 @@ export const GooseCanvas: FC<GooseCanvasProps> = ({ disabled, onTap }) => {
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        floatingTextsRef.current.push({ x, y, text: "+1", opacity: 1, type: "normal" });
+        floatingTextsRef.current.push({ x, y, text: zeroMode ? getRandomEmoji() : "+1", opacity: 1, type: "normal" });
 
         onTap?.(() => onBonus(e));
     };

@@ -1,5 +1,5 @@
 import {IDataBase} from "./database.interface";
-import {Prisma, PrismaClient, Round, User, UserRoundScore} from "../../generated/prisma";
+import {Prisma, PrismaClient, Round, User} from "../../generated/prisma";
 import {BadRequestError} from "../../errors/app-error";
 
 const prisma = new PrismaClient()
@@ -40,17 +40,30 @@ class PrismaDataBase implements IDataBase {
         })
     }
 
-    findUserRoundScore(username: string, roundId: string): Promise<UserRoundScore | null> {
-        return this._prisma.userRoundScore.findUnique({
-            where: { username_roundId: { username, roundId } }
-        })
-    }
-
-    findUserRoundScoreMax(roundId: string): Promise<UserRoundScore | null> {
-        return this._prisma.userRoundScore.findFirst({
+    async getRoundResults(roundId: string): Promise<Record<string, number>> {
+        const results = await this._prisma.userRoundScore.findMany({
             where: { roundId },
             orderBy: { score: 'desc' },
-        })
+            select: {
+                username: true,
+                score: true,
+            },
+        });
+
+        return Object.fromEntries(results.map(r => [r.username, r.score]));
+    }
+
+    async writeRoundScores(roundId: string, scores: Record<string, number>): Promise<void> {
+        const data = Object.entries(scores).map(([username, score]) => ({
+            username,
+            roundId,
+            score,
+        }));
+
+        await this._prisma.userRoundScore.createMany({
+            data,
+            skipDuplicates: true,
+        });
     }
 }
 
