@@ -98,7 +98,7 @@ export const GameScreen: FC<Props> = ({round, userInfo, setRound, scores, setSco
     };
 
 
-    if (!isConnected) return <div className="p-4 text-red-500">Disconnected...</div>;
+    if (!isConnected) return <div className="p-4">Connecting...</div>;
     if (!round) return <div className="p-4 text-red-500">Round not found</div>;
 
     return (

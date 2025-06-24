@@ -8,6 +8,9 @@ export async function authController(app: FastifyInstance) {
         if (!username || !password) {
             throw new BadRequestError('Username and password cannot be empty')
         }
+        if (!/^[a-z0-9]{3,}$/.test(username)) {
+            throw new BadRequestError('Username must be at least 3 characters, and contain only a-z and digits')
+        }
         const token = await authService.registerUser(username, password)
         return { token }
     })
