@@ -46,8 +46,8 @@ export const GameScreen: FC<Props> = ({round, userInfo, setRound, scores, setSco
                     merged[userInfo.username] = optimisticSelfScores ?? realisticSelfScores;
                 }
 
-                const sortedEntries = Object.entries(merged).sort((a, b) => b[1] - a[1]);
-                return Object.fromEntries(sortedEntries);
+                const sortedScores = Object.entries(merged).sort((a, b) => b[1] - a[1]);
+                return Object.fromEntries(sortedScores);
             });
         } else if (type === "cooldown-tick") {
             const {remaining, leader, connected} = m as {type: string, remaining: number, leader: string, connected: string}
@@ -72,7 +72,8 @@ export const GameScreen: FC<Props> = ({round, userInfo, setRound, scores, setSco
             setConnected(connected)
             setGameTimeLeft(null);
             setRound(r => r && ({...r, status: RoundStatus.FINISHED_STATUS}))
-            setScores(scores)
+            const sortedScores = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+            setScores(Object.fromEntries(sortedScores))
         }
     };
 
