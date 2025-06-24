@@ -32,9 +32,9 @@ const AdminCreateRoundPanel: FC<Props> = ({onAdd}) => {
 
     return (
         <div className="max-w-md mx-auto p-6">
-            <h1 className="text-2xl font-semibold mb-4 text-center">Admin panel</h1>
             <Card>
-                <CardContent className="space-y-4 pt-6">
+                <h2 className="text-m font-semibold text-center">Admin panel</h2>
+                <CardContent className="space-y-4">
                     <Button
                         onClick={handleSubmit}
                         disabled={loading}

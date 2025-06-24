@@ -11,7 +11,7 @@ export function AppHeader() {
     const decodedToken = useUserInfo();
 
     return (
-        <header className="flex flex-wrap items-center justify-between px-4 sm:px-6 py-3 bg-white shadow-md sticky top-0 left-0 right-0 z-50 gap-3">
+        <header className="fixed top-0 left-0 right-0 z-50 w-full bg-white shadow-md px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
             {/* Лого / Нав */}
             <nav className="text-gray-800 font-medium flex-shrink-0">
                 <a className="text-lg sm:text-xl font-semibold text-blue-600" href="/rounds">

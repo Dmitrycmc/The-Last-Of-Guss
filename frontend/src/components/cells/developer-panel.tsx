@@ -58,7 +58,7 @@ export const DeveloperPanel: FC<Props> = ({ data }) => {
     };
 
     return (
-        <div className="fixed bottom-4 right-4 z-50 bg-white/90 backdrop-blur border border-gray-300 rounded-lg shadow-md text-xs p-3 space-y-1 max-w-sm">
+        <div className="fixed top-19 right-4 z-50 bg-white/90 backdrop-blur border border-gray-300 rounded-lg shadow-md text-xs p-3 space-y-1 max-w-sm">
             <div className="font-semibold text-gray-700">Network</div>
             {Object.entries(data).map(([key, value]) => {
                 const colorClass = value ? valueColorMap.get(value) : "text-gray-400";

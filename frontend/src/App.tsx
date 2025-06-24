@@ -13,12 +13,14 @@ function App() {
       return (
           <BrowserRouter>
               <AppHeader />
-              <Routes>
-                  <Route path="/rounds" element={<RoundsListPage />} />
-                  <Route path="/rounds/:roundId" element={<RoundPage />} />
+              <div className="mt-20 w-[80vw] max-w-[640px]">
+                  <Routes>
+                      <Route path="/rounds" element={<RoundsListPage />} />
+                      <Route path="/rounds/:roundId" element={<RoundPage />} />
 
-                  <Route path="*" element={<Navigate to="/rounds" replace />} />
-              </Routes>
+                      <Route path="*" element={<Navigate to="/rounds" replace />} />
+                  </Routes>
+              </div>
           </BrowserRouter>
       )
   }

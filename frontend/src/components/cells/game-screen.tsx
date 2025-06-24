@@ -102,7 +102,7 @@ export const GameScreen: FC<Props> = ({round, userInfo, setRound, scores, setSco
     if (!round) return <div className="p-4 text-red-500">Round not found</div>;
 
     return (
-        <div className="p-4">
+        <div>
             <h1 className="text-2xl font-bold mb-2">
                 Round {round.id.slice(0, 6)}
             </h1>
