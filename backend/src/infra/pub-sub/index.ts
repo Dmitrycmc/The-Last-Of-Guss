@@ -18,13 +18,21 @@ class RedisPubSub implements IPubSub {
     constructor(private _pub: ReturnType<typeof createClient>, private _sub: ReturnType<typeof createClient>) {}
 
     async publish(roundId: string, message: any): Promise<void> {
-        await this._pub.publish(roundId, JSON.stringify({...message, publisher: config.instance, publisherHost: os.hostname()}))
+        await this._pub.publish(roundId, JSON.stringify({
+            ...message,
+            // containerId if docker, ip if locally, host if cloud
+            leader: os.hostname()
+        }))
     }
 
     subscribe(roundId: string, cb: (message: any) => void): void {
         this._sub.subscribe(roundId, (str: string) => {
             const message = JSON.parse(str)
-            cb({...message, subscriber: config.instance})
+            cb({
+                ...message,
+                // containerId if docker, ip if locally, host if cloud
+                connected: os.hostname()
+            })
         })
     }
 

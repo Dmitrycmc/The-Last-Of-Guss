@@ -9,7 +9,7 @@ import {Progress} from "@/components/atoms/progress";
 import useUserInfo from "@/hooks/useUserInfo";
 import useRoundWebSocket from "@/hooks/useWebSocket";
 import {GooseCanvas} from "@/components/atoms/canvas";
-
+import {DeveloperPanel} from "@/components/cells/developer-panel";
 
 export default function RoundPage() {
     const roundId = useParams().roundId as string;
@@ -18,6 +18,8 @@ export default function RoundPage() {
     const [scores, setScores] = useState<Record<string, number>>({});
     const [cooldown, setCooldown] = useState<number | null>(null);
     const [gameTimeLeft, setGameTimeLeft] = useState<number | null>(null);
+    const [leader, setLeader] = useState<string | null>(null);
+    const [connected, setConnected] = useState<string | null>(null);
 
     const userInfo = useUserInfo()
 
@@ -54,16 +56,26 @@ export default function RoundPage() {
                 return Object.fromEntries(sortedEntries);
             });
         } else if (type === "cooldown-tick") {
-            const {remaining} = m as {type: string, remaining: number}
+            const {remaining, leader, connected} = m as {type: string, remaining: number, leader: string, connected: string}
+            setLeader(leader)
+            setConnected(connected)
             setCooldown(remaining);
         } else if (type === "start") {
+            const {leader, connected} = m as {leader: string, connected: string}
+            setLeader(leader)
+            setConnected(connected)
             setCooldown(null);
             setGameTimeLeft(null);
             setRound(r => r && ({...r, status: RoundStatus.ACTIVE_STATUS}))
         } else if (type === "game-tick") {
-            const {remaining} = m as {type: string, remaining: number}
+            const {remaining, leader, connected} = m as {type: string, remaining: number, leader: string, connected: string}
+            setLeader(leader)
+            setConnected(connected)
             setGameTimeLeft(remaining);
         } else if (type === "end") {
+            const {leader, connected} = m as {leader: string, connected: string}
+            setLeader(leader)
+            setConnected(connected)
             setGameTimeLeft(null);
             setRound(r => r && ({...r, status: RoundStatus.FINISHED_STATUS}))
         }
@@ -163,6 +175,7 @@ export default function RoundPage() {
                 ))}
                 </tbody>
             </table>
+            <DeveloperPanel data={{leader, connected}} />
         </div>
     );
 }

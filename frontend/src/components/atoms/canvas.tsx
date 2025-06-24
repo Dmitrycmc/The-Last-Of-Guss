@@ -96,13 +96,15 @@ export const GooseCanvas: FC<GooseCanvasProps> = ({ disabled, onTap }) => {
     };
 
     return (
-        <canvas
-            ref={canvasRef}
-            className={cn(
-                "w-full h-[500px] bg-white rounded shadow-md transition",
-                disabled ? "opacity-50" : "cursor-pointer"
-            )}
-            onClick={handleClick}
-        />
+        <div className="w-full flex justify-center">
+            <canvas
+                ref={canvasRef}
+                className={cn(
+                    "w-full max-w-[320px] h-[500px] bg-white rounded shadow-md transition",
+                    disabled ? "opacity-50" : "cursor-pointer"
+                )}
+                onClick={handleClick}
+            />
+        </div>
     );
 }
