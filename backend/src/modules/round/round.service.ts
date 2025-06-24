@@ -66,6 +66,9 @@ class RoundService {
 
     async handleTap(roundId: string, user: UserTokenData): Promise<void> {
         const round = await database.findRound(roundId) // cache
+        if (user.role === "NIKITA_ROLE") {
+            return
+        }
         if (!round) throw new NotFoundError('Round not found')
 
         const isActive = getRoundStatus(round.startAt, round.endAt) === RoundStatus.ACTIVE_STATUS

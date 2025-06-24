@@ -134,7 +134,7 @@ export async function roundController(app: FastifyInstance) {
         })
         ws.on('message', (str) => {
             try {
-                if (str.toString() === 'tap' && getRoundStatus(round.startAt, round.endAt) === RoundStatus.ACTIVE_STATUS) {
+                if (str.toString() === 'tap') {
                     roundService.handleTap(roundId, user)
                 }
             } catch (e) {
