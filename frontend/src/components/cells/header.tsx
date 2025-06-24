@@ -11,7 +11,7 @@ export function AppHeader() {
     const decodedToken = useUserInfo()
 
     return (
-        <header className="flex items-center justify-between px-6 py-4 bg-white shadow-md">
+        <header className="flex items-center justify-between px-6 py-4 bg-white shadow-md sticky top-0 left-0 right-0 z-50">
             {/* Навигация */}
             <nav className="flex items-center gap-6 text-gray-800 font-medium">
                 <a className="text-xl font-semibold text-blue-600" href="/rounds">🪿The last of Guss 🪿</a>

@@ -8,7 +8,7 @@ import {formatTimeLeft} from "@/lib/format";
 import {Progress} from "@/components/atoms/progress";
 import useUserInfo from "@/hooks/useUserInfo";
 import useRoundWebSocket from "@/hooks/useWebSocket";
-import {cn} from "@/lib/utils";
+import {GooseCanvas} from "@/components/atoms/canvas";
 
 
 export default function RoundPage() {
@@ -70,18 +70,18 @@ export default function RoundPage() {
     };
 
     const [sendToWs, isConnected] = useRoundWebSocket(roundId, {onMessage: handleMessage})
-    const [bonusFlash, setBonusFlash] = useState(false)
 
-    const handleTap = async () => {
-        if ((selfScores + 10) % 20 === 0) {
-            setBonusFlash(true);
-            setTimeout(() => setBonusFlash(false), 1000); // ореол гаснет через 1 сек
+    const handleTap = async (onBonus: () => void) => {
+        const bonusTap = (selfScores + 10) % 20 === 0
+
+        if (bonusTap) {
+            onBonus()
         }
+        setScores(s => ({
+            ...s,
+            [userInfo.username]: (s[userInfo.username] || 0) + (bonusTap ? 10 : 1)
+        }))
         try {
-            setScores(s => ({
-                ...s,
-                [userInfo.username]: (s[userInfo.username] || 0) + 1
-            }))
             sendToWs("tap");
         } catch (e) {
             console.error("Failed to tap", e);
@@ -128,16 +128,7 @@ export default function RoundPage() {
                 </div>
             )}
 
-            <div
-                onClick={handleTap}
-                className={cn(
-                    "text-[300px] select-none cursor-pointer transition active:scale-90",
-                    round.status !== RoundStatus.ACTIVE_STATUS && "opacity-50 pointer-events-none",
-                    bonusFlash && "ring-8 ring-yellow-400 animate-ping rounded-full"
-                )}
-            >
-                🪿
-            </div>
+            <GooseCanvas disabled={round.status !== RoundStatus.ACTIVE_STATUS} onTap={handleTap} />
 
             <table className="mt-4 text-sm text-left border border-gray-200 w-full">
                 <thead className="bg-gray-100 text-gray-700">
