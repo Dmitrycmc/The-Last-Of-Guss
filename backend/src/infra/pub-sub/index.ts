@@ -1,6 +1,7 @@
 import {createClient} from 'redis'
 import {IPubSub} from "./pub-sub.interface";
 import config from "../../config";
+import * as os from "os";
 
 const redisPub = createClient({
     url: config.redisUrl,
@@ -17,7 +18,7 @@ class RedisPubSub implements IPubSub {
     constructor(private _pub: ReturnType<typeof createClient>, private _sub: ReturnType<typeof createClient>) {}
 
     async publish(roundId: string, message: any): Promise<void> {
-        await this._pub.publish(roundId, JSON.stringify({...message, publisher: config.instance}))
+        await this._pub.publish(roundId, JSON.stringify({...message, publisher: config.instance, publisherHost: os.hostname()}))
     }
 
     subscribe(roundId: string, cb: (message: any) => void): void {
