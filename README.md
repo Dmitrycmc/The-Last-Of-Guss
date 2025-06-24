@@ -1,6 +1,8 @@
-# 🦆 The Last of Guss — Tap Battle Game
+# 🦆 The Last of Guss — Tap Battle Game 🎮🔥
 
-Play now: https://the-last-of-guss.onrender.com/
+📄 [Problem Statement](./TASK.md)
+
+🚀 [==>> Play now! <<==](https://the-last-of-guss-ngbn.onrender.com/)
 
 Multiplayer browser game where players compete in tapping a mutated goose. Each game round has a `cooldown` and `duration`, stores player scores, winner, and real-time game status. The game is built with WebSocket and supports horizontal scaling.
 ---
@@ -23,32 +25,69 @@ Multiplayer browser game where players compete in tapping a mutated goose. Each 
 | WS              | ws + Redis Pub/Sub        |
 | CI/CD           | GitHub Actions (*)        |
 | Testing         | Vitest, Supertest (*)     |
-| Deployment      | Docker + Compose (*)      |
+| Deployment      | Docker + Compose          |
+| Deployment      | https://render.com/       |
 
 ---
 
 ## 🧠 Architecture
+### Local dev
+```
+                                                       🔄 Redis Pub/Sub (Transport)
+                                                                ↑↓     ↑↓     ↑↓
+🧑‍💻 Client → 🌐 HTTP / WebSocket → ⚖️ Traefik (Balancer) → 🐇 Fastify Instances (xN)
+                                                                 ↘         ↙
+                                                   🧠 Redis Key Store + 🐘 PostgreSQL
+```
+### Deployment
+Hosted on [https://render.com/](https://the-last-of-guss-ngbn.onrender.com/)
+<img width="1092" alt="Screenshot 2025-06-24 at 7 08 33 AM" src="https://github.com/user-attachments/assets/63ddca06-8543-4315-a71c-7be27672d2f1" />
+```
+                                                   🔄 Redis Pub/Sub (Transport)
+                                                           ↑↓     ↑↓     ↑↓
+🧑‍💻 Client → 🌐 HTTP / WebSocket → ⚖️ Render (Balancer) → 🐇 Fastify Instances (x3)
+                                                             ↘         ↙
+                                               🧠 Redis Key Store + 🐘 PostgreSQL
+```
+
+- Each client opens a WebSocket to a random backend instance, instances are communication via Redis pub/sub
 
 ```
-Client → Nginx (Reverse Proxy) → Multiple Fastify Instances
-             ↘        ↙
-               Redis (Pub/Sub + Key Store)
-               PostgreSQL (Game state)
+🧑‍💻 Client #1 ─┐
+🧑‍💻 Client #2 ─┼─→ 🌐 WebSocket → 🐇 Fastify Instance #1 
+🧑‍💻 Client #3 ─┘                            ⇅
+                               🔄 Redis Pub/Sub (transport)
+🧑‍💻 Client #4 ─┐                            ⇅
+🧑‍💻 Client #5 ─┼─→ 🌐 WebSocket → 🐇 Fastify Instance #2
+🧑‍💻 Client #6 ─┘                           
 ```
 
-- Each client opens a WebSocket to a random backend instance
-- All instances are subscribed to Redis pub/sub by `round:{id}`
-- Scores are stored in Redis and flushed to PostgreSQL periodically
-- One instance acquires a Redis lock to finalize the round
-- **Only one active WebSocket connection is allowed per user** (anti-abuse)
+- Scores are stored in Redis and flushed to PostgreSQL after game finish
+- One instance acquires a Redis lock to lead and finalize the round
+- Only one active WebSocket connection is allowed per user (anti-abuse)
 
 ---
 
 ## 🔒 Fault Tolerance Highlights
 
-- Redis failure: AOF + periodic PostgreSQL flushes (*)
 - Instance crash: clients reconnect via JWT and restore state
+- If lead instance fails, another one acquires a Redis lock and keep leading
 - Lock holder crash: Redis lock TTL + backup acquirers
+
+### 🧪 Resilience Testing Feature (Killer Feature)
+
+Each client UI shows:
+- 🖥️ which Fastify instance it's connected to
+- 👑 which instance is currently the **leader**
+
+<img width="178" alt="Screenshot 2025-06-24 at 7 24 06 AM" src="https://github.com/user-attachments/assets/4fe57e2c-64c3-4d9c-a35e-9948de0dcc70" />
+
+From the bottom-right debug panel, users can:
+- Click on any instance ID
+- Trigger a remote **kill** command via WebSocket
+- Observe how the system handles failover and elects a new leader
+
+This enables manual testing of **horizontal fault tolerance** and **leader promotion** in real-time production-like scenarios.
 
 ---
 
