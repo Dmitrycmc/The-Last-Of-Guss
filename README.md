@@ -31,24 +31,6 @@ Multiplayer browser game where players compete in tapping a mutated goose. Each 
 ---
 
 ## 🧠 Architecture
-### Local dev
-```
-                                                       🔄 Redis Pub/Sub (Transport)
-                                                                ↑↓     ↑↓     ↑↓
-🧑‍💻 Client → 🌐 HTTP / WebSocket → ⚖️ Traefik (Balancer) → 🐇 Fastify Instances (xN)
-                                                                 ↘         ↙
-                                                   🧠 Redis Key Store + 🐘 PostgreSQL
-```
-### Deployment
-Hosted on [https://render.com/](https://the-last-of-guss-ngbn.onrender.com/)
-<img width="1092" alt="Screenshot 2025-06-24 at 7 08 33 AM" src="https://github.com/user-attachments/assets/63ddca06-8543-4315-a71c-7be27672d2f1" />
-```
-                                                   🔄 Redis Pub/Sub (Transport)
-                                                           ↑↓     ↑↓     ↑↓
-🧑‍💻 Client → 🌐 HTTP / WebSocket → ⚖️ Render (Balancer) → 🐇 Fastify Instances (x3)
-                                                             ↘         ↙
-                                               🧠 Redis Key Store + 🐘 PostgreSQL
-```
 
 - Each client opens a WebSocket to a random backend instance, instances are communication via Redis pub/sub
 
@@ -65,6 +47,36 @@ Hosted on [https://render.com/](https://the-last-of-guss-ngbn.onrender.com/)
 - Scores are stored in Redis and flushed to PostgreSQL after game finish
 - One instance acquires a Redis lock to lead and finalize the round
 - Only one active WebSocket connection is allowed per user (anti-abuse)
+
+### Local setup
+
+For launch whole infrastructure locally you need to build backend docker image, up docker-compose and run front:dev
+
+- Postgres
+- Redis
+- Fastify (x3 inst)
+- Traefik (balancer)
+
+```shell
+yarn back:build-image && yarn back:dev | yarn front:dev
+```
+```
+                                                       🔄 Redis Pub/Sub (Transport)
+                                                                ↑↓     ↑↓     ↑↓
+🧑‍💻 Client → 🌐 HTTP / WebSocket → ⚖️ Traefik (Balancer) → 🐇 Fastify Instances (xN)
+                                                                 ↘         ↙
+                                                   🧠 Redis Key Store + 🐘 PostgreSQL
+```
+### Deployment
+Hosted on [https://render.com/](https://the-last-of-guss-ngbn.onrender.com/)
+<img width="1092" alt="Screenshot 2025-06-24 at 7 08 33 AM" src="https://github.com/user-attachments/assets/63ddca06-8543-4315-a71c-7be27672d2f1" />
+```
+                                                       🔄 Redis Pub/Sub (Transport)
+                                                              ↑↓     ↑↓     ↑↓
+🧑‍💻 Client → 🌐 HTTP / WebSocket → ⚖️ Render (Balancer) → 🐇 Fastify Instances (x3)
+                                                                 ↘         ↙
+                                                   🧠  Redis Key Store + 🐘 PostgreSQL
+```
 
 ---
 
