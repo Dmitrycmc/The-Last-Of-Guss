@@ -30,19 +30,31 @@ export const DeveloperPanel: FC<Props> = ({ data }) => {
     }, [data]);
 
     const handleKill = async (host: string) => {
+        // todo: refactor
         const confirmed = window.confirm(`Kill ${host}?`);
         if (!confirmed) return;
 
-        try {
-            const res = await fetch(`/api/debug/kill/${host}`, {method: 'POST'});
-            if (res.ok) {
-                console.log(`Sent kill request to ${host}`);
-            } else {
-                console.warn(`Kill failed: ${res.status}`);
+        const maxAttempts = 8;
+
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                const res = await fetch(`/api/debug/kill/${host}`, { method: "POST" });
+
+                if (res.ok) {
+                    console.log(`Kill request to ${host} succeeded on attempt ${attempt}`);
+                    return;
+                } else {
+                    console.warn(`Attempt ${attempt} failed: ${res.status}`);
+                }
+            } catch (err) {
+                console.error(`Attempt ${attempt} failed`, err);
             }
-        } catch (err) {
-            console.error("Error killing host", err);
+
+            // небольшая задержка между попытками (например, 150ms)
+            await new Promise((r) => setTimeout(r, 150));
         }
+
+        console.error(`Failed to kill host ${host} after ${maxAttempts} attempts`);
     };
 
     return (

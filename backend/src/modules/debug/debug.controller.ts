@@ -15,7 +15,7 @@ export async function debugController(app: FastifyInstance) {
                 throw new Error("Killed by webhook")
             });
         } else {
-            res.send(`Current: ${current}, not matched: ${host}`);
+            res.status(409).send(`Current: ${current}, not matched: ${host}`);
         }
     });
 }
