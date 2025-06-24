@@ -2,21 +2,19 @@ import bcrypt from "bcrypt";
 import {generateToken} from "../../utils/jwt";
 import {resolveRole} from "../../utils/roles";
 import database from "../../infra/database";
-import {BadRequestError, NotFoundError} from "../../errors/app-error";
+import {BadRequestError} from "../../errors/app-error";
 
 class AuthService {
-    async registerUser(username: string, rawPassword: string): Promise<string> {
-        const hashedPassword = await bcrypt.hash(rawPassword, 10)
-        const role = resolveRole(username)
-
-        const user = await database.createUser({ username, password: hashedPassword, role })
-
-        return generateToken(user)
-    }
-
-    async loginUser(username: string, password: string): Promise<string> {
+    async loginRegisterUser(username: string, password: string): Promise<string> {
         const user = await database.findUser(username)
-        if (!user) throw new NotFoundError(`User '${username}' not found`)
+        if (!user) {
+            const hashedPassword = await bcrypt.hash(password, 10)
+            const role = resolveRole(username)
+
+            const user = await database.createUser({ username, password: hashedPassword, role })
+
+            return generateToken(user)
+        }
 
         const isValid = await bcrypt.compare(password, user.password)
         if (!isValid) throw new BadRequestError('Invalid password')

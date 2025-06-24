@@ -39,7 +39,7 @@ const AdminCreateRoundPanel: FC<Props> = ({onAdd}) => {
                         onClick={handleSubmit}
                         disabled={loading}
                         variant="outline"
-                        className={`w-full`}
+                        className="w-full"
                     >
                         {loading ? "Creating..." : "Create Round"}
                     </Button>

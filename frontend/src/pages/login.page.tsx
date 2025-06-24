@@ -20,8 +20,12 @@ export default function LoginPage() {
             console.log(data)
             storage.setToken(data.token)
             window.location.assign('/rounds')
-        } catch {
-            setError(`Incorrect password`)
+        } catch (err) {
+            if (typeof err === 'object' && err !== null && 'message' in err) {
+                setError("Error: " + err.message);
+            } else {
+                setError("Error: " + JSON.stringify(err));
+            }
         }
     }
 
@@ -45,7 +49,7 @@ export default function LoginPage() {
                 onEnter={handleSubmit}
             />
             {error && <div className="text-red-500">{error}</div>}
-            <Button onClick={handleSubmit} disabled={!username || !password}>Login</Button>
+            <Button variant="outline" className="w-full" onClick={handleSubmit} disabled={!username || !password}>Login</Button>
         </div>
     )
 }

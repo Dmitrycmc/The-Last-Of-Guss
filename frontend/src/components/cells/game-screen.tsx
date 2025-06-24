@@ -1,7 +1,7 @@
 import {emojiStatus} from "@/lib/emoji";
 import {formatTimeLeft} from "@/lib/format";
 import {Progress} from "@/components/atoms/progress";
-import {GooseCanvas} from "@/components/atoms/canvas";
+import {GooseCanvas} from "@/components/cells/canvas";
 import {ScoresTable} from "@/components/cells/scores-table";
 import {DeveloperPanel} from "@/components/cells/developer-panel";
 import {type Dispatch, type FC, type SetStateAction, useMemo, useState} from "react";

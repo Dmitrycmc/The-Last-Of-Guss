@@ -43,16 +43,8 @@ class HttpRequest {
         return data
     }
 
-    register(username: string, password: string) {
-        return this.post('/register', {payload: {username, password}})
-    }
-
-    login(username: string, password: string) {
-        return this.post('/login', {payload: {username, password}})
-    }
-
     loginOrRegister(username: string, password: string) {
-        return Promise.any([this.login(username, password), this.register(username, password)])
+        return this.post('/login-register', {payload: {username, password}})
     }
 
     getRoundsList(): Promise<Round[]> {
