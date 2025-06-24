@@ -6,12 +6,14 @@ export async function debugController(app: FastifyInstance) {
         return { status: 'ok' };
     });
 
-    app.get("/debug/kill/:host", (req, res) => {
+    app.post("/debug/kill/:host", (req, res) => {
         const current = os.hostname();
         const {host} = req.params as {host: string}
         if (host === current) {
             res.send(`Killing ${current}`);
-            setTimeout(() => process.exit(1));
+            setTimeout(() => {
+                throw new Error("Killed by webhook")
+            });
         } else {
             res.send(`Current: ${current}, not matched: ${host}`);
         }
