@@ -86,7 +86,9 @@ export async function roundController(app: FastifyInstance) {
                     const intervalId = setInterval(() => {
                         if (remaining <= 0) {
                             clearInterval(intervalId)
-                            pubSub.publish(roundId, {type: 'end'})
+                            cache.getRoundScores(roundId).then(scores => {
+                                pubSub.publish(roundId, {type: 'end', scores })
+                            })
                         } else {
                             cache.prolongateLock(roundId)
                             pubSub.publish(roundId, {type: 'game-tick', remaining})

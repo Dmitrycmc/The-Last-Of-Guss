@@ -37,7 +37,7 @@ export default function RoundPage() {
     }, [roundId]);
 
     const handleMessage = (m: unknown) => {
-        console.log('Received message: ', m)
+        //console.log('Received message: ', m)
         const {type} = m as {type: string}
         if (type === "update-score") {
             const {scores} = m as {type: string, scores: Record<string, number>}
@@ -45,11 +45,12 @@ export default function RoundPage() {
                 const merged = { ...s, ...scores };
 
                 const optimisticSelfScores = s[userInfo.username];
+                const realisticSelfScores = scores[userInfo.username];
 
-                if (optimisticSelfScores !== undefined && selfScores !== undefined) {
-                    merged[userInfo.username] = Math.max(optimisticSelfScores, selfScores);
-                } else if (optimisticSelfScores !== undefined || selfScores !== undefined) {
-                    merged[userInfo.username] = optimisticSelfScores ?? selfScores;
+                if (optimisticSelfScores !== undefined && realisticSelfScores !== undefined) {
+                    merged[userInfo.username] = Math.max(optimisticSelfScores, realisticSelfScores);
+                } else if (optimisticSelfScores !== undefined || realisticSelfScores !== undefined) {
+                    merged[userInfo.username] = optimisticSelfScores ?? realisticSelfScores;
                 }
 
                 const sortedEntries = Object.entries(merged).sort((a, b) => b[1] - a[1]);
@@ -73,11 +74,12 @@ export default function RoundPage() {
             setConnected(connected)
             setGameTimeLeft(remaining);
         } else if (type === "end") {
-            const {leader, connected} = m as {leader: string, connected: string}
+            const {leader, connected, scores} = m as {leader: string, connected: string, scores: Record<string, number>}
             setLeader(leader)
             setConnected(connected)
             setGameTimeLeft(null);
             setRound(r => r && ({...r, status: RoundStatus.FINISHED_STATUS}))
+            setScores(scores)
         }
     };
 
