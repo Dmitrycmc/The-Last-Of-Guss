@@ -34,7 +34,7 @@ export const DeveloperPanel: FC<Props> = ({ data }) => {
         if (!confirmed) return;
 
         try {
-            const res = await fetch(`/debug/kill/${host}`, {method: 'POST'});
+            const res = await fetch(`/api/debug/kill/${host}`, {method: 'POST'});
             if (res.ok) {
                 console.log(`Sent kill request to ${host}`);
             } else {
