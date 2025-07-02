@@ -170,15 +170,13 @@ This enables manual testing of **horizontal fault tolerance** and **leader promo
 ## 🚀 Getting Started
 
 ```bash
-# Backend
-cp .example.env .env
-docker-compose up -d
-pnpm dev
-
-# Frontend
-pnpm install
-pnpm dev
+yarn back:build-image
+yarn back:dev
+yarn front:dev
 ```
+
+If you run `yarn back:dev`, it starts on `localhost:3000`
+If you run `yarn back:docker`, it starts on `localhost` for balancer or `localhost:3001`, `localhost:3002`, `localhost:3003` for instances
 
 ---
 

@@ -11,6 +11,13 @@ Currently, two official plugins are available:
 
 If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
+## Development
+cp ./example.env .env
+
+You need to specify 
+- `VITE_WS_HOST` in `.env`
+- `server.proxy['/api'].target` in `vite.config.ts`
+
 ```js
 export default tseslint.config({
   extends: [

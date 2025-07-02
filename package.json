@@ -5,9 +5,9 @@
   "scripts": {
     "front:dev": "yarn --cwd ./frontend dev",
     "front:build": "yarn --cwd ./frontend build",
-    "back:dev": "docker-compose up",
+    "back:dev": "yarn --cwd ./backend dev",
+    "back:docker": "yarn --cwd ./backend docker && docker-compose up",
     "back:build": "yarn --cwd ./backend build",
-    "back:build-image": "yarn --cwd ./backend docker",
     "prepare": "husky",
     "precommit": "yarn back:build && yarn front:build"
   },
