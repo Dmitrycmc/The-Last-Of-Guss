@@ -1,4 +1,4 @@
-import {useRef, useState} from 'react'
+import {useState} from 'react'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import {httpRequest} from "@/api";
@@ -9,14 +9,30 @@ export default function LoginPage() {
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
 
-    const passwordFieldRef = useRef<HTMLInputElement | null>(null)
-
-    const handleSubmit = async () => {
+    const handleRegister = async () => {
         if (!username || !password) return
 
         setError('')
         try {
-            const data = await httpRequest.loginOrRegister(username, password)
+            const data = await httpRequest.register(username, password)
+            console.log(data)
+            storage.setToken(data.token)
+            window.location.assign('/rounds')
+        } catch (err) {
+            if (typeof err === 'object' && err !== null && 'message' in err) {
+                setError("Error: " + err.message);
+            } else {
+                setError("Error: " + JSON.stringify(err));
+            }
+        }
+    }
+
+    const handleLogin = async () => {
+        if (!username || !password) return
+
+        setError('')
+        try {
+            const data = await httpRequest.login(username, password)
             console.log(data)
             storage.setToken(data.token)
             window.location.assign('/rounds')
@@ -36,20 +52,16 @@ export default function LoginPage() {
                 placeholder="Enter username"
                 value={username}
                 onChangeValue={setUsername}
-                onEnter={() => {
-                    passwordFieldRef.current?.focus()
-                }}
             />
             <Input
-                ref={passwordFieldRef}
                 type="password"
                 placeholder="Enter password"
                 value={password}
                 onChangeValue={setPassword}
-                onEnter={handleSubmit}
             />
+            <Button variant="outline" className="w-full" onClick={handleRegister} disabled={!username || !password}>Register</Button>
+            <Button variant="outline" className="w-full" onClick={handleLogin} disabled={!username || !password}>Login</Button>
             {error && <div className="text-red-500">{error}</div>}
-            <Button variant="outline" className="w-full" onClick={handleSubmit} disabled={!username || !password}>Login</Button>
         </div>
     )
 }
