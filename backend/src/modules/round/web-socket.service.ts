@@ -24,21 +24,26 @@ export const webSocketService = async ({ws, round, user}: {ws: WebSocket, round:
     const takeLeadership = () => {
         console.log('Took leadership')
         if (getRoundStatus(round.startAt, round.endAt) === RoundStatus.COOLDOWN_STATUS) {
-            const timeToStart = (round.startAt.getTime() - Date.now()) / 1000
-            let remaining = Math.floor(timeToStart)
+            const timeToStartSec = (round.startAt.getTime() - Date.now()) / 1000
+            let remainingSec = Math.floor(timeToStartSec)
             setTimeout(() => {
-                const intervalId = setInterval(() => {
-                    cache.prolongateLock(round.id)
-                    if (remaining <= 0) {
-                        clearInterval(intervalId)
-                        pubSub.publish(round.id, {type: 'start'})
-                        takeLeadership()
-                    } else {
-                        pubSub.publish(round.id, {type: 'cooldown-tick', remaining})
-                        remaining--
-                    }
-                }, 1000)
-            }, timeToStart - remaining)
+                if (remainingSec <= 0) {
+                    pubSub.publish(round.id, {type: 'start'})
+                    takeLeadership()
+                } else {
+                    pubSub.publish(round.id, {type: 'cooldown-tick', remaining: remainingSec})
+                    const intervalId = setInterval(() => {
+                        cache.prolongateLock(round.id)
+                        if (--remainingSec <= 0) {
+                            clearInterval(intervalId)
+                            pubSub.publish(round.id, {type: 'start'})
+                            takeLeadership()
+                        } else {
+                            pubSub.publish(round.id, {type: 'cooldown-tick', remaining: remainingSec})
+                        }
+                    }, 1000)
+                }
+            }, (timeToStartSec - remainingSec) * 1000)
         }
 
         if (getRoundStatus(round.startAt, round.endAt) === RoundStatus.ACTIVE_STATUS) {
